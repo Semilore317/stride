@@ -33,7 +33,10 @@ public class User {
                     name = "user_id",
                     referencedColumnName = "id"
             ),
-        inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
+        inverseJoinColumns = @JoinColumn(
+                name = "role_id",
+                referencedColumnName = "id"
+        )
     )
     private Collection<Role> roles = new HashSet<>();
 }
