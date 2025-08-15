@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "orders") // if anything breaks, its likely this
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
