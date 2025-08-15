@@ -1,42 +1,41 @@
 package com.abrahambankole.stridedotcom.model;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String firstName;
     private String lastName;
-
+    @Column(unique = true)
     private String email;
     private String password;
 
-    // cascade means that any thing that affects the user CASCADES to all his other properties like deletion
-    // if a user is deleted, his cart and orders are also deleted
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Cart cart;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Order> orders;
 
-    // but even if there's no user, the roles still exist, hence no cascading of shit
-    @ManyToMany(
-            fetch = FetchType.EAGER,
-            cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}
-    )
+    @ManyToMany(fetch = FetchType.LAZY) // Changed to LAZY for performance
     @JoinTable(
-            name = "user_roled",
-            joinColumns = @JoinColumn(
-                    name = "user_id",
-                    referencedColumnName = "id"
-            ),
-        inverseJoinColumns = @JoinColumn(
-                name = "role_id",
-                referencedColumnName = "id"
-        )
+            name = "user_role",
+            joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")
     )
     private Collection<Role> roles = new HashSet<>();
 }

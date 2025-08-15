@@ -5,11 +5,12 @@ import lombok.*;
 
 import java.math.BigDecimal;
 
+@Entity
+@Table(name = "cart") // Explicitly name the table (optional)
+@NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Entity
 public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,4 @@ public class Cart {
     @OneToOne
     @JoinColumn(name = "user_id")
     private User user;
-
-
 }

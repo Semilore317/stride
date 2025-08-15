@@ -13,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @NoArgsConstructor
 @Entity
+@Table(name = "orders")
 public class Order {
 
     @Id
