@@ -1,7 +1,8 @@
 package com.abraham_bankole.stridedotcom.service.product;
 
-import com.abraham_bankole.stridedotcom.model.Category;
-import com.abraham_bankole.stridedotcom.model.Product;
+import com.abraham_bankole.stridedotcom.model.*;
+import com.abraham_bankole.stridedotcom.repository.CartItemRepository;
+import com.abraham_bankole.stridedotcom.repository.OrderItemRepository;
 import com.abraham_bankole.stridedotcom.repository.CategoryRepository;
 import com.abraham_bankole.stridedotcom.repository.ProductRepository;
 import com.abraham_bankole.stridedotcom.request.AddProductRequest;
@@ -14,11 +15,15 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static java.util.Optional.ofNullable;
+
 @Service
 @RequiredArgsConstructor //generates a constructor for only the final or @NonNull fields
 public class ProductService implements iProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final CartItemRepository cartItemRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -26,7 +31,7 @@ public class ProductService implements iProductService {
             throw new EntityExistsException(request.getName() + " already exists!");
         }
         //Category category = Optional.ofNullable(categoryRepository.findByName(String.valueOf(request.getCategory()))) // if there's an error its likely from here string vs object
-        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+        Category category = ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
                     return categoryRepository.save(newCategory);
@@ -58,8 +63,8 @@ public class ProductService implements iProductService {
     @Override
     public Product updateProduct(ProductUpdateRequest request, Long productId) {
         return productRepository.findById(productId).map(existingProduct -> updateExistingProduct(existingProduct, request))
-                .map(productRepository :: save) //lambda expression, equivalent to product -> productRepository.save(product).
-                .orElseThrow(() -> new EntityNotFoundException("Product with ID: " +productId + " not found"));
+                .map(productRepository::save) //lambda expression, equivalent to product -> productRepository.save(product).
+                .orElseThrow(() -> new EntityNotFoundException("Product with ID: " + productId + " not found"));
     }
 
     private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
@@ -83,7 +88,30 @@ public class ProductService implements iProductService {
 
     @Override
     public void deleteProduct(Long productId) {
+        productRepository.findById(productId)
+                .ifPresentOrElse(product -> {
+                    List<CartItem> cartItems = cartItemRepository.findByProductId(productId);
+                    cartItems.forEach(cartItem -> {
+                        Cart cart = cartItem.getCart();
+                        cart.removeItem(cartItem);
+                        cartItemRepository.delete(cartItem);
+                    });
 
+                    List<OrderItem> orderItems = orderItemRepository.findByProductId(productId);
+                    orderItems.forEach(orderItem -> {
+                        Order order = orderItem.getOrder();
+                        order.setProduct(null);
+                        orderItem.save(orderItem);
+                    });
+
+                    Optional.ofNullable(product.getCategory())
+                            .ifPresent(category -> category.getProducts().remove(product));
+                    product.setCategory(null);
+
+                    productRepository.deleteById(product.getId());
+                }, () -> {
+                    throw new EntityNotFoundException("Product Not Found");
+                });
     }
 
     @Override
