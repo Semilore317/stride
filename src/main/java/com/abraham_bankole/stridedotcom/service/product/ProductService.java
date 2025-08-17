@@ -56,8 +56,10 @@ public class ProductService implements iProductService {
 
 
     @Override
-    public Product updateProduct(Product Product, Long productId) {
-        return null;
+    public Product updateProduct(ProductUpdateRequest request, Long productId) {
+        return productRepository.findById(productId).map(existingProduct -> updateExistingProduct(existingProduct, request))
+                .map(productRepository :: save) //lambda expression, equivalent to product -> productRepository.save(product).
+                .orElseThrow(() -> new EntityNotFoundException("Product with ID: " +productId + " not found"));
     }
 
     private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
