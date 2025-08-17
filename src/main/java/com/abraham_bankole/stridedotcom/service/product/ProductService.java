@@ -5,6 +5,7 @@ import com.abraham_bankole.stridedotcom.model.Product;
 import com.abraham_bankole.stridedotcom.repository.CategoryRepository;
 import com.abraham_bankole.stridedotcom.repository.ProductRepository;
 import com.abraham_bankole.stridedotcom.request.AddProductRequest;
+import com.abraham_bankole.stridedotcom.request.ProductUpdateRequest;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,8 @@ public class ProductService implements iProductService {
         if (productExists(request.getName(), request.getBrand())) {
             throw new EntityExistsException(request.getName() + " already exists!");
         }
-        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory()))
+        //Category category = Optional.ofNullable(categoryRepository.findByName(String.valueOf(request.getCategory()))) // if there's an error its likely from here string vs object
+        Category category = Optional.ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
                     return categoryRepository.save(newCategory);
@@ -54,8 +56,21 @@ public class ProductService implements iProductService {
 
 
     @Override
-    public Product updateProduct(Product product, Long productId) {
+    public Product updateProduct(Product Product, Long productId) {
         return null;
+    }
+
+    private Product updateExistingProduct(Product existingProduct, ProductUpdateRequest request) {
+        existingProduct.setName(request.getName());
+        existingProduct.setBrand(request.getBrand());
+        existingProduct.setPrice(request.getPrice());
+        existingProduct.setInventory(request.getInventory());
+        existingProduct.setDescription(request.getDescription());
+
+        Category category = categoryRepository.findByName(request.getCategory().getName());
+        existingProduct.setCategory(category);
+        return existingProduct;
+
     }
 
     @Override
