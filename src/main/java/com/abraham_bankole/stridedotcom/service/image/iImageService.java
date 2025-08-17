@@ -1,5 +1,6 @@
 package com.abraham_bankole.stridedotcom.service.image;
 
+import com.abraham_bankole.stridedotcom.dtos.ImageDto;
 import com.abraham_bankole.stridedotcom.model.Image;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -9,5 +10,5 @@ public interface iImageService {
     Image getImageById(Long imageId);
     void deleteImageById(Long imageId);
     void updateImage(MultipartFile file, Long imageId);
-    List<Image> saveImages(List<MultipartFile> files, Long productId);
+    List<ImageDto> saveImages(List<MultipartFile> files, Long productId);
 }
