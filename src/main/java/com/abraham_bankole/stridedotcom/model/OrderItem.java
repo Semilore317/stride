@@ -37,4 +37,7 @@ public class OrderItem {
         this.order = order;
         this.product = product;
     }
+
+    public void save(OrderItem orderItem) {
+    }
 }
