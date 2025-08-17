@@ -2,13 +2,14 @@ package com.abraham_bankole.stridedotcom.service.product;
 
 import com.abraham_bankole.stridedotcom.model.Product;
 import com.abraham_bankole.stridedotcom.request.AddProductRequest;
+import com.abraham_bankole.stridedotcom.request.ProductUpdateRequest;
 
 import java.util.List;
 
 public interface iProductService {
     // declare all methods - CRUD
     Product addProduct(AddProductRequest product);
-    Product updateProduct(Product product, Long productid);
+    Product updateProduct(ProductUpdateRequest product, Long productid);
     Product getProductsById(Long productId);
     void deleteProduct(Long productId);
 
