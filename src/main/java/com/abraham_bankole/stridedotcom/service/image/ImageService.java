@@ -24,7 +24,8 @@ public class ImageService implements iImageService {
 
     @Override
     public Image getImageById(Long imageId) {
-        return null;
+        return imageRepository.findById(imageId)
+                .orElseThrow(() -> new EntityNotFoundException("Image not found"));
     }
 
     @Override
@@ -50,7 +51,7 @@ public class ImageService implements iImageService {
     }
 
     @Override
-    public List<ImageDto> saveImages(List<MultipartFile> files, Long productId) {
+    public List<ImageDto> saveImages(Long productId, List<MultipartFile> files) {
         // instead of returning the image entity directly to the frontend
         // we make use of a DTO (Data Transfer Object) that's returned to the frontend
         // allows to transfer stuff between server and client without exposing the internal entity structure
