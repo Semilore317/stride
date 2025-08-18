@@ -4,6 +4,8 @@ import com.abraham_bankole.stridedotcom.dtos.ImageDto;
 import com.abraham_bankole.stridedotcom.model.Image;
 import com.abraham_bankole.stridedotcom.response.ApiResponse;
 import com.abraham_bankole.stridedotcom.service.image.iImageService;
+import jakarta.persistence.EntityNotFoundException;
+import org.apache.coyote.Response;
 import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,6 +22,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
 @RequiredArgsConstructor
@@ -50,4 +53,29 @@ public class ImageController {
                         + image.getFileName() + "\"").body(resource);
         //if there's an error it's probably  from casting the resource from Resource
     }
+
+    //task
+    // implement the remaining 2 endpoints
+    // using the exception classes that were thrown and catch 'em at the controller level
+    //1. update image;
+    @PutMapping("/image/{imageId}/update")
+    public ResponseEntity<ApiResponse> updateImage(@PathVariable Long imageId, @RequestBody MultipartFile file){
+        try {
+            imageService.updateImage(file, imageId); // Void method, no return value
+            return ResponseEntity.ok(new ApiResponse("Image updated Successfully!", null));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
+        }
+    }
+    //2. delete image;
+    @DeleteMapping("/image/{imageId}/delete")
+    public ResponseEntity<ApiResponse> deleteImage(@PathVariable  Long imageId){
+        try {
+            imageService.deleteImageById(imageId);
+            return ResponseEntity.ok(new ApiResponse("Deleted Successfully!", null));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
+        }
+    }
+
 }
