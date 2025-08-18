@@ -50,4 +50,38 @@ public class CategoryController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Error: ", e.getMessage()));
         }
     }
+
+    // implement the remaining 3 endpoints
+    // with the needed exceptions at the controller level
+    //1. find category by name
+    @GetMapping("/category/{name}/category")
+    public ResponseEntity<ApiResponse> getCategoryByName(@PathVariable String name) {
+        try {
+            Category theCategory = categoryService.findCategoryByName(name);
+            return ResponseEntity.ok(new ApiResponse("Successfully Found", theCategory));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    //2. delete category
+    @PutMapping("/category/{id}/delete")
+    public ResponseEntity<ApiResponse> deleteCategoryById(@PathVariable Long id) {
+        try {
+            categoryService.deleteCategory(id);
+            return ResponseEntity.ok(new ApiResponse("Successfully Deleted", null));
+        } catch (EntityNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    //3. update category
+    @PutMapping("/category/{id}/update")
+    public ResponseEntity<ApiResponse> updateCategoryById(@PathVariable Long id,@RequestBody Category category) {
+        try {
+            Category updatedCategory = categoryService.updateCategory(category, id);
+            return ResponseEntity.ok(new ApiResponse("Successfully Updated", updatedCategory));
+        } catch (EntityNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(), null));
+        }
+    }
 }
