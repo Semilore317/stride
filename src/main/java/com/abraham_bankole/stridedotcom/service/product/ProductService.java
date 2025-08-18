@@ -1,15 +1,15 @@
 package com.abraham_bankole.stridedotcom.service.product;
 
+import com.abraham_bankole.stridedotcom.dtos.ImageDto;
+import com.abraham_bankole.stridedotcom.dtos.ProductDto;
 import com.abraham_bankole.stridedotcom.model.*;
-import com.abraham_bankole.stridedotcom.repository.CartItemRepository;
-import com.abraham_bankole.stridedotcom.repository.OrderItemRepository;
-import com.abraham_bankole.stridedotcom.repository.CategoryRepository;
-import com.abraham_bankole.stridedotcom.repository.ProductRepository;
+import com.abraham_bankole.stridedotcom.repository.*;
 import com.abraham_bankole.stridedotcom.request.AddProductRequest;
 import com.abraham_bankole.stridedotcom.request.ProductUpdateRequest;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -22,8 +22,10 @@ import static java.util.Optional.ofNullable;
 public class ProductService implements iProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
+    private final ImageRepository imageRepository;
     private final CartItemRepository cartItemRepository;
     private final OrderItemRepository orderItemRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public Product addProduct(AddProductRequest request) {
@@ -142,5 +144,28 @@ public class ProductService implements iProductService {
     @Override
     public List<Product> getProductsByBrandAndName(String brand, String name) {
         return productRepository.findByNameAndBrand(brand, name);
+    }
+
+    //custom mwthod to convert a list of products to a product DTO
+    @Override
+    public List<ProductDto> getConvertedProducts(List<Product> products) {
+        return products.stream().
+                map(this::convertToDto).toList(); // uses the method below but to a list
+    }
+
+    // custom method to convert product to a product DTO
+    @Override // pulls the method to interface level
+    public ProductDto convertToDto(Product product) {
+        //return modelMapper.map(product, ProductDto.class);
+        ProductDto productDto = modelMapper.map(product, ProductDto.class);
+        // get the list of images and convert them to the imageDto
+        List<Image> images = imageRepository.findByPrductId(product.getId());
+        List<ImageDto> imageDtos = images
+                .stream()
+                .map(image -> modelMapper
+                        .map(image, ImageDto.class))
+                .toList();
+        productDto.setImages(imageDtos);
+        return productDto;
     }
 }
