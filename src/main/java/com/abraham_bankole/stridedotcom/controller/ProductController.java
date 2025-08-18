@@ -3,19 +3,18 @@ package com.abraham_bankole.stridedotcom.controller;
 import com.abraham_bankole.stridedotcom.dtos.ProductDto;
 import com.abraham_bankole.stridedotcom.model.Product;
 import com.abraham_bankole.stridedotcom.repository.ProductRepository;
+import com.abraham_bankole.stridedotcom.request.AddProductRequest;
+import com.abraham_bankole.stridedotcom.request.ProductUpdateRequest;
 import com.abraham_bankole.stridedotcom.response.ApiResponse;
 import com.abraham_bankole.stridedotcom.service.product.iProductService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.engine.spi.Resolution;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 @RestController
@@ -40,6 +39,37 @@ public class ProductController {
             return ResponseEntity.ok(new ApiResponse("Found!", productDto));
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse("Oops!", e));
+        }
+    }
+
+    // TODO:
+
+    // complement the product controller implementation
+    // Check the ones that are returning list of product and a single product
+    // use @RequestBody, @PathVariable, @RequestParam
+    // addProduct and updateProduct need the @RequestBody and probably @PathVariable
+
+    @PostMapping("/add")
+    public ResponseEntity<ApiResponse> addProduct(@RequestBody AddProductRequest product) {
+        try {
+            Product theProduct = productService.addProduct(product);
+            ProductDto productDto = productService.convertToDto(theProduct);
+            return ResponseEntity.ok(new ApiResponse("Added Product Successfully!", productDto));
+        }catch (EntityNotFoundException e) {
+            return ResponseEntity.status(CONFLICT)
+                    .body(new ApiResponse(e.getMessage(), null));
+        }
+    }
+
+    @PutMapping("/product/{productId}/update")
+    public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId) {
+        try{
+            Product theProduct = productService.updateProduct(request, productId);
+            ProductDto productDto = productService.convertToDto(theProduct);
+            return ResponseEntity.ok(new ApiResponse("Updated Product Successfully!", productDto));
+        }catch (EntityNotFoundException e) {
+            return ResponseEntity.status(NOT_FOUND)
+                    .body(new ApiResponse(e.getMessage(), null));
         }
     }
 }
