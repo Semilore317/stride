@@ -77,5 +77,4 @@ public class ImageController {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
         }
     }
-
 }
