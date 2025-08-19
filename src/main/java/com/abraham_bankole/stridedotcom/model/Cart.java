@@ -29,9 +29,7 @@ public class Cart {
     private Set<CartItem> items = new HashSet<>();
 
     public void removeItem(CartItem cartItem) {
-        this.items.remove(cartItem);
-        cartItem.setCart(null);
-        updateTotalAmount();
+
     }
 
     private void updateTotalAmount() {
