@@ -1,5 +1,9 @@
 package com.abraham_bankole.stridedotcom.service.user;
 
+import com.abraham_bankole.stridedotcom.dtos.ImageDto;
+import com.abraham_bankole.stridedotcom.dtos.ProductDto;
+import com.abraham_bankole.stridedotcom.dtos.UserDto;
+import com.abraham_bankole.stridedotcom.model.Image;
 import com.abraham_bankole.stridedotcom.model.User;
 import com.abraham_bankole.stridedotcom.repository.UserRepository;
 import com.abraham_bankole.stridedotcom.request.CreateUserRequest;
@@ -8,7 +12,9 @@ import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.modelmapper.ModelMapper;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,7 +34,7 @@ public class UserService implements iUserService {
                     user.setEmail(request.getEmail());
                     user.setPassword(request.getPassword());
                     return userRepository.save(user);
-                }).orElseThrow(() -> new EntityExistsException("Oops!" + request.getEmail() + "already exists!"));
+                }).orElseThrow(() -> new EntityExistsException("Oops! " + request.getEmail() + " already exists!"));
     }
 
     @Override
@@ -52,5 +58,9 @@ public class UserService implements iUserService {
                 .ifPresentOrElse(userRepository :: delete, () ->{
                     throw new EntityNotFoundException("User Not Found!");
                 });
+    }
+
+    public UserDto convertToDto(User user) {
+        return new ModelMapper().map(user, UserDto.class);
     }
 }
