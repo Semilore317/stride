@@ -1,5 +1,6 @@
 package com.abraham_bankole.stridedotcom.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,9 +16,9 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Getter
     private String name;
 
+    @JsonIgnore //tells the Category class not to call the products - stops the stack overflow
     @OneToMany(mappedBy = "category")
     private List<Product> products;
 

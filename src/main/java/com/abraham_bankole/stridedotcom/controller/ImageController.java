@@ -5,7 +5,6 @@ import com.abraham_bankole.stridedotcom.model.Image;
 import com.abraham_bankole.stridedotcom.response.ApiResponse;
 import com.abraham_bankole.stridedotcom.service.image.iImageService;
 import jakarta.persistence.EntityNotFoundException;
-import org.apache.coyote.Response;
 import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
@@ -30,6 +29,27 @@ import static org.springframework.http.HttpStatus.NOT_FOUND;
 public class ImageController {
     private final iImageService imageService;
 
+//    @PostMapping("/upload")
+//    public ResponseEntity<ApiResponse> uploadImages(
+//            @RequestParam("files") List<MultipartFile> files,
+//            @RequestParam("productId") Long productId){
+//        try {
+//            List<ImageDto> imageDto = imageService.saveImages(productId, files);
+//            return ResponseEntity.ok(new ApiResponse("Images uploaded successfully!", imageDto));
+//        } catch (Exception e) {
+//            return ResponseEntity.status(INTERNAL_SERVER_ERROR)
+//                    .body(new ApiResponse("Upload Error!", e.getMessage()));
+//        }
+//    }
+
+//    @PostMapping("/upload")
+//    public ResponseEntity<ApiResponse> uploadImages(
+//            @RequestParam("files") List<MultipartFile> files,
+//            @RequestParam("productId") Long productId) {
+//        List<ImageDto> imageDto = imageService.saveImages(productId, files);
+//        return ResponseEntity.ok(new ApiResponse("Images uploaded successfully!", imageDto));
+//    }
+
     @PostMapping("/upload")
     public ResponseEntity<ApiResponse> uploadImages(
             @RequestParam("files") List<MultipartFile> files,
@@ -38,10 +58,12 @@ public class ImageController {
             List<ImageDto> imageDto = imageService.saveImages(productId, files);
             return ResponseEntity.ok(new ApiResponse("Images uploaded successfully!", imageDto));
         } catch (Exception e) {
+            e.printStackTrace(); // helpful for debugging in console/log
             return ResponseEntity.status(INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse("Upload Error!", e.getMessage()));
         }
     }
+
 
     @GetMapping("/image/download/{imageId}")
     public ResponseEntity<Resource> downloadImage(@PathVariable  Long imageId) throws SQLException {
@@ -73,6 +95,7 @@ public class ImageController {
         try {
             imageService.deleteImageById(imageId);
             return ResponseEntity.ok(new ApiResponse("Deleted Successfully!", null));
+
         } catch (EntityNotFoundException e) {
             return ResponseEntity.status(NOT_FOUND).body(new ApiResponse(e.getMessage(),null));
         }
