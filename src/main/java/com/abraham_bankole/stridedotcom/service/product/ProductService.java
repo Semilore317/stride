@@ -32,7 +32,7 @@ public class ProductService implements iProductService {
         if (productExists(request.getName(), request.getBrand())) {
             throw new EntityExistsException(request.getName() + " already exists!");
         }
-        //Category category = Optional.ofNullable(categoryRepository.findByName(String.valueOf(request.getCategory()))) // if there's an error its likely from here string vs object
+
         Category category = ofNullable(categoryRepository.findByName(request.getCategory().getName()))
                 .orElseGet(() -> {
                     Category newCategory = new Category(request.getCategory().getName());
@@ -48,9 +48,9 @@ public class ProductService implements iProductService {
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
-        if (productExists(request.getName(), request.getBrand())) {
-
-        }
+//        if (productExists(request.getName(), request.getBrand())) {
+//
+//        }
         return new Product(
                 request.getName(),
                 request.getBrand(),
@@ -118,7 +118,8 @@ public class ProductService implements iProductService {
 
     @Override
     public List<Product> getProductsByName(String name) {
-        return productRepository.findByName(name);
+        //return productRepository.findByName(name);
+        return productRepository.findByNameContainingIgnoreCase(name);
     }
 
     @Override

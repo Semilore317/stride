@@ -16,7 +16,6 @@ public interface iProductService {
 
     // filtering CRUD operations
     List<Product> getProductsByName(String name);
-
     List<Product> getAllProducts();
     List<Product> getProductsByCategory(String category);
     List<Product> getProductsByBrand(String brand);

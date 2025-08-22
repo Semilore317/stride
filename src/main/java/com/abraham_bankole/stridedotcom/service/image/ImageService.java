@@ -66,23 +66,21 @@ public class ImageService implements iImageService {
                 image.setImage(new SerialBlob(file.getBytes()));
                 image.setProduct(product);
 
-                String buildDownloadUrl = "/api/v1/images/download/";
-                String downloadUrl = buildDownloadUrl + image.getId();
-                image.setDownloadUrl(downloadUrl);
+                Image savedImage = imageRepository.save(image); // save first to get ID
 
-                Image savedImage = imageRepository.save(image);
+                // now build correct URL using savedImage.getId()
+                String downloadUrl = "/api/v1/images/image/download/" + savedImage.getId();
+                savedImage.setDownloadUrl(downloadUrl);
+                imageRepository.save(savedImage); // update with correct URL
 
-                // update link to get the id of saved image link
-                savedImage.setDownloadUrl(buildDownloadUrl + savedImage.getId());
-                imageRepository.save(savedImage);
-
-                // build the info to return to the frontend
+                // DTO to return to frontend
                 ImageDto imageDto = new ImageDto();
                 imageDto.setId(savedImage.getId());
                 imageDto.setFileName(savedImage.getFileName());
                 imageDto.setDownloadUrl(savedImage.getDownloadUrl());
 
                 savedImages.add(imageDto);
+
 
             } catch (IOException | SQLException e) {
                 throw new RuntimeException(e);
