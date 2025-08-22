@@ -12,7 +12,7 @@ public interface iProductService {
     Product addProduct(AddProductRequest product);
     Product updateProduct(ProductUpdateRequest product, Long productid);
     Product getProductsById(Long productId);
-    void deleteProduct(Long productId);
+    void deleteProductById(Long productId);
 
     // filtering CRUD operations
     List<Product> getProductsByName(String name);
@@ -28,4 +28,5 @@ public interface iProductService {
     // custom method to convert product to a product DTO
     // pushes it to the interface level
     ProductDto convertToDto(Product product);
+
 }

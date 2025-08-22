@@ -89,7 +89,7 @@ public class ProductService implements iProductService {
     }
 
     @Override
-    public void deleteProduct(Long productId) {
+    public void deleteProductById(Long productId) {
         productRepository.findById(productId)
                 .ifPresentOrElse(product -> {
                     List<CartItem> cartItems = cartItemRepository.findByProductId(productId);
