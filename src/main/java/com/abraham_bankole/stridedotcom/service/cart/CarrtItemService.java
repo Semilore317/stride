@@ -6,6 +6,7 @@ import com.abraham_bankole.stridedotcom.model.Product;
 import com.abraham_bankole.stridedotcom.repository.CartItemRepository;
 import com.abraham_bankole.stridedotcom.repository.CartRepository;
 import com.abraham_bankole.stridedotcom.service.product.iProductService;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -46,7 +47,10 @@ public class CarrtItemService implements iCartItemService {
 
     @Override
     public void removeItemFromCart(Long cartId, Long productId) {
-
+        Cart cart = cartService.getCart(cartId);
+        CartItem itemToBeRemoved = getCartItem(cartId, productId);
+        cart.removeItem(itemToBeRemoved);
+        cartRepository.save(cart);
     }
 
     @Override
@@ -56,6 +60,11 @@ public class CarrtItemService implements iCartItemService {
 
     @Override
     public CartItem getCartItem(Long cartId, Long productId) {
-        return null;
+        Cart cart = cartService.getCart(cartId);
+        return cart.getItems()
+                .stream()
+                .filter(item -> item.getProduct().getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException("Cart not found"));
     }
 }
