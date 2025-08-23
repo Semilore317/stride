@@ -1,9 +1,6 @@
 package com.abraham_bankole.stridedotcom.service.user;
 
-import com.abraham_bankole.stridedotcom.dtos.ImageDto;
-import com.abraham_bankole.stridedotcom.dtos.ProductDto;
 import com.abraham_bankole.stridedotcom.dtos.UserDto;
-import com.abraham_bankole.stridedotcom.model.Image;
 import com.abraham_bankole.stridedotcom.model.User;
 import com.abraham_bankole.stridedotcom.repository.UserRepository;
 import com.abraham_bankole.stridedotcom.request.CreateUserRequest;
@@ -14,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
