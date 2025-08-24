@@ -7,7 +7,6 @@ import com.abraham_bankole.stridedotcom.request.AddProductRequest;
 import com.abraham_bankole.stridedotcom.request.ProductUpdateRequest;
 import com.abraham_bankole.stridedotcom.response.ApiResponse;
 import com.abraham_bankole.stridedotcom.service.product.iProductService;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
