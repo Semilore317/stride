@@ -5,6 +5,7 @@ import com.abraham_bankole.stridedotcom.model.User;
 import com.abraham_bankole.stridedotcom.repository.CartItemRepository;
 import com.abraham_bankole.stridedotcom.repository.CartRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -33,21 +34,25 @@ public class CartService implements iCartService{
     }
 
     @Override
+    @Transactional
     public void clearCart(Long cartId) {
         Cart cart = getCart(cartId);
         cartItemRepository.deleteAllByCartId(cartId);
         cart.clearCart();
-        cartRepository.delete(cart);
+        cartRepository.deleteById(cartId);
     }
 
     @Override
     public Cart initializeNewCartForUser(User user) {
-        return Optional.ofNullable(getCartByUserId(user.getId())).orElseGet(() -> {
+        return Optional.ofNullable(getCartByUserId(user.getId()))
+                .orElseGet(() -> {
             Cart cart = new Cart();
             cart.setUser(user);
+            cart.setTotalAmount(BigDecimal.ZERO); // initialized here
             return cartRepository.save(cart);
         });
     }
+
 
     @Override
     public BigDecimal getTotalPrice(Long cartId) {

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("${api.prefix}/cart")
+@RequestMapping("${api.prefix}/carts")
 public class CartController {
     private final iCartService cartService;
 
