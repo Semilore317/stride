@@ -28,4 +28,6 @@ public class OrderController {
         List<Order> orders = orderService.getUserOrders(userId);
         return ResponseEntity.ok(new ApiResponse("Success!", orders));
     }
+
+    // TODO: Create an Order DTO to return a list of user orders
 }
