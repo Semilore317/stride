@@ -20,6 +20,7 @@ public class UserController {
     private final iUserService userService;
     private final UserRepository userRepository;
 
+// TODO: Implement this later, because why not?
 //    @GetMapping("/all")
 //    public ResponseEntity<ApiResponse> getAllUsers() {
 //        List<User> users = userRepository.findAll();
