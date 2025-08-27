@@ -27,22 +27,31 @@ public class UserController {
 //        return ResponseEntity.ok(new ApiResponse("success", users));
 //    }
 
+    // todo:
+    // create a solution to return a user with the specified information
+    // return along with the user
+    // the user cart
+    // the user order list
+
     @GetMapping("/user/{userId}/user")
     public ResponseEntity<ApiResponse> getUserById(@PathVariable Long userId) {
         User user = userService.findUserById(userId);
-        return ResponseEntity.ok(new ApiResponse("Found!", user));
+        UserDto userDto = userService.convertUserToDto(user);
+        return ResponseEntity.ok(new ApiResponse("Found!", userDto));
     }
 
     @PostMapping("/add")
     public ResponseEntity<ApiResponse> createUser(@RequestBody CreateUserRequest request) {
         User user = userService.createUser(request);
-        return ResponseEntity.ok(new ApiResponse("Successfully Created User!", user));
+        UserDto userDto = userService.convertUserToDto(user);
+        return ResponseEntity.ok(new ApiResponse("Successfully Created User!", userDto));
     }
 
     @PutMapping("/{userId}/update")
     public ResponseEntity<ApiResponse> updateUser(@RequestBody UserUpdateRequest request, @PathVariable Long userId) {
         User user = userService.updateUser(request, userId);
-        return ResponseEntity.ok(new ApiResponse("Successfully Updated User!", user));
+        UserDto userDto = userService.convertUserToDto(user);
+        return ResponseEntity.ok(new ApiResponse("Successfully Updated User!", userDto));
     }
 
     @DeleteMapping("/{userId}/delete")

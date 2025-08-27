@@ -1,5 +1,6 @@
 package com.abraham_bankole.stridedotcom.controller;
 
+import com.abraham_bankole.stridedotcom.dtos.OrderDto;
 import com.abraham_bankole.stridedotcom.model.Order;
 import com.abraham_bankole.stridedotcom.repository.OrderRepository;
 import com.abraham_bankole.stridedotcom.response.ApiResponse;
@@ -20,14 +21,16 @@ public class OrderController {
     @PostMapping("/user/order")
     public ResponseEntity<ApiResponse> placeOrder(@RequestParam Long userId){
         Order order = orderService.placeOrder(userId);
+        OrderDto orderDto = orderService.convertToDto(order);
         return ResponseEntity.ok(new ApiResponse("Order placed successfully!", order));
     }
 
     @GetMapping("/user/{userId}/order")
     public ResponseEntity<ApiResponse> getUserOrders(@PathVariable Long userId){
-        List<Order> orders = orderService.getUserOrders(userId);
+        List<OrderDto> orders = orderService.getUserOrders(userId);
         return ResponseEntity.ok(new ApiResponse("Success!", orders));
     }
 
     // TODO: Create an Order DTO to return a list of user orders
+    // TODO: Create an Order DTO to return  user's order
 }
