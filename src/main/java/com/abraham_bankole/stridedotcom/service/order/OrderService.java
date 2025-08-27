@@ -1,5 +1,6 @@
 package com.abraham_bankole.stridedotcom.service.order;
 
+import com.abraham_bankole.stridedotcom.dtos.OrderDto;
 import com.abraham_bankole.stridedotcom.enums.OrderStatus;
 import com.abraham_bankole.stridedotcom.model.Cart;
 import com.abraham_bankole.stridedotcom.model.Order;
@@ -9,6 +10,7 @@ import com.abraham_bankole.stridedotcom.repository.OrderRepository;
 import com.abraham_bankole.stridedotcom.repository.ProductRepository;
 import com.abraham_bankole.stridedotcom.service.cart.iCartService;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -22,6 +24,7 @@ public class OrderService implements iOrderService{
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final iCartService cartService;
+    private final ModelMapper modelMapper;
 
     @Override
     public Order placeOrder(Long userId) {
@@ -68,7 +71,13 @@ public class OrderService implements iOrderService{
     }
 
     @Override
-    public List<Order> getUserOrders(Long userId) {
-        return orderRepository.findByUserId(userId);
+    public List<OrderDto> getUserOrders(Long userId) {
+        List<Order> orders = orderRepository.findByUser_Id(userId);
+        return orders.stream().map(this :: convertToDto).toList();
+    }
+    
+    @Override
+    public OrderDto convertToDto(Order order){
+        return modelMapper.map(order, OrderDto.class);
     }
 }

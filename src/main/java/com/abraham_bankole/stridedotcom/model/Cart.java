@@ -24,6 +24,7 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -36,7 +37,7 @@ public class Cart {
     }
 
     private void updateTotalAmount() {
-
+        // Implement calculation here
     }
 
     public void addItem(CartItem cartItem) {
