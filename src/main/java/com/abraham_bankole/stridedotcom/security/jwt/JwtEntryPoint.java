@@ -15,7 +15,7 @@ import java.util.Map;
 
 @Component
 public class JwtEntryPoint implements AuthenticationEntryPoint {
-
+    // AuthenticationEntryPoint as a built-in interface used to handle unauthorized access
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
                          AuthenticationException authException) throws IOException, ServletException {
@@ -28,7 +28,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         body.put("Error :", "Unauthorized");
         body.put("Message :", "Invalid credentials");
 
-        final ObjectMapper mapper = new ObjectMapper();
+        final ObjectMapper mapper = new ObjectMapper(); // conver Java objects to JSON
         mapper.writeValue(response.getOutputStream(), body);
     }
 }
