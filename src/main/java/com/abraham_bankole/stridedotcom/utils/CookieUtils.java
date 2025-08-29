@@ -3,9 +3,14 @@ package com.abraham_bankole.stridedotcom.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
 import java.util.Arrays;
 
+@Component
 public class CookieUtils {
+    @Value("${app.useSecureCookie}")
     private boolean useSecureCookie;
 
     public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken, long maxAge) {
@@ -25,12 +30,12 @@ public class CookieUtils {
     private void setResponseHeader(HttpServletResponse response, Cookie refreshTokenCookie, String sameSite) {
         StringBuilder cookieHeader = new StringBuilder();
         cookieHeader.append(refreshTokenCookie.getName()).append("#")
-                .append(refreshTokenCookie.getValue())
-                .append("; HttpOnly; Path=") // httpOnly prevents client side scripts from accessing the cookie for security
-                .append(refreshTokenCookie.getPath()) // path = url path that must exist in the requested url for the browser to send the cookie
-                .append("; Max-Age=").append(refreshTokenCookie.getMaxAge()) // maxAge = lifetime of cookie in seconds
-                .append(useSecureCookie ? "; Secure" : "") // makes sure the cookie is sent only over HTTPS
-                .append("; SameSite=").append(sameSite); // sameSite prevents Cross Site Request Forgery
+                    .append(refreshTokenCookie.getValue())
+                    .append("; HttpOnly; Path=") // httpOnly prevents client side scripts from accessing the cookie for security
+                    .append(refreshTokenCookie.getPath()) // path = url path that must exist in the requested url for the browser to send the cookie
+                    .append("; Max-Age=").append(refreshTokenCookie.getMaxAge()) // maxAge = lifetime of cookie in seconds
+                    .append(useSecureCookie ? "; Secure" : "") // makes sure the cookie is sent only over HTTPS
+                    .append("; SameSite=").append(sameSite); // sameSite prevents Cross Site Request Forgery
         response.setHeader("Set-Cookie", cookieHeader.toString());
     }
 
