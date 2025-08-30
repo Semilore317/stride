@@ -27,8 +27,7 @@ public class JwtEntryPoint implements AuthenticationEntryPoint {
         //value to be returned if a request doesn't contain any valid credentials
         body.put("Error :", "Unauthorized");
         body.put("Message :", "Invalid credentials");
-
-        final ObjectMapper mapper = new ObjectMapper(); // conver Java objects to JSON
+        final ObjectMapper mapper = new ObjectMapper(); // convert Java objects to JSON
         mapper.writeValue(response.getOutputStream(), body);
     }
 }
