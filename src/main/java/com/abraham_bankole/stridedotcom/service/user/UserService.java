@@ -12,6 +12,7 @@ import com.abraham_bankole.stridedotcom.request.UserUpdateRequest;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.modelmapper.ModelMapper;
 
@@ -25,6 +26,7 @@ public class UserService implements iUserService {
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
     private final ModelMapper modelMapper;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public User createUser(CreateUserRequest request) {
@@ -35,7 +37,7 @@ public class UserService implements iUserService {
                     user.setFirstName(request.getFirstName());
                     user.setLastName(request.getLastName());
                     user.setEmail(request.getEmail());
-                    user.setPassword(request.getPassword());
+                    user.setPassword(passwordEncoder.encode(request.getPassword()));
                     return userRepository.save(user);
                 }).orElseThrow(() -> new EntityExistsException("Oops! " + request.getEmail() + " already exists!"));
     }

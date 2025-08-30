@@ -9,6 +9,7 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
@@ -37,7 +38,10 @@ public class Cart {
     }
 
     private void updateTotalAmount() {
-        // Implement calculation here
+        this.totalAmount = items.stream()
+                .map(CartItem::getTotalPrice)
+                .filter(Objects::nonNull)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     public void addItem(CartItem cartItem) {
