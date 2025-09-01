@@ -20,12 +20,11 @@ public class CartItemController {
 
     @PostMapping("/item/add")
     public ResponseEntity<ApiResponse> addItemToCart(
-                                                    //Long userId,
                                                    @RequestParam Long productId,
                                                    @RequestParam int quantity) {
         // i'd normally get the userId from the authentication
         // but no login logic yet so, id have to get it manually
-        User user = userService.findUserById(1L);
+        User user = userService.getAuthenticatedUser();
         Cart cart = cartService.initializeNewCartForUser(user);
         cartItemService.addItemToCart(cart.getId(), productId, quantity);
 
