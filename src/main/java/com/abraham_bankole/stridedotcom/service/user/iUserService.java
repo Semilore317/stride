@@ -11,4 +11,6 @@ public interface iUserService {
     User findUserById(Long userId);
     void deleteUser(Long userId);
     UserDto convertUserToDto(User user);
+
+    User getAuthenticatedUser();
 }

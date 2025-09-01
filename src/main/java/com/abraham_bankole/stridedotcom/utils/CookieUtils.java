@@ -26,25 +26,24 @@ public class CookieUtils {
         //makes sense to set Secure attribute if sameSite is None
         setResponseHeader(response, refreshTokenCookie, sameSite);
     }
-    
+
     private void setResponseHeader(HttpServletResponse response, Cookie refreshTokenCookie, String sameSite) {
         StringBuilder cookieHeader = new StringBuilder();
-        cookieHeader.append(refreshTokenCookie.getName()).append("#")
-                    .append(refreshTokenCookie.getValue())
-                    .append("; HttpOnly; Path=") // httpOnly prevents client side scripts from accessing the cookie for security
-                    .append(refreshTokenCookie.getPath()) // path = url path that must exist in the requested url for the browser to send the cookie
-                    .append("; Max-Age=").append(refreshTokenCookie.getMaxAge()) // maxAge = lifetime of cookie in seconds
-                    .append(useSecureCookie ? "; Secure" : "") // makes sure the cookie is sent only over HTTPS
-                    .append("; SameSite=").append(sameSite); // sameSite prevents Cross Site Request Forgery
+        cookieHeader.append(refreshTokenCookie.getName()).append("=")
+                .append(refreshTokenCookie.getValue())
+                .append("; HttpOnly; Path=").append(refreshTokenCookie.getPath())
+                .append("; Max-Age=").append(refreshTokenCookie.getMaxAge())
+                .append(useSecureCookie ? "; Secure" : "")
+                .append("; SameSite=").append(sameSite);
         response.setHeader("Set-Cookie", cookieHeader.toString());
     }
 
-    public String getRefreshTokenFromCookies(HttpServletRequest request){
+    public String getRefreshTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null){
-            for (Cookie cookie : cookies){
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
                 System.out.println("Names of the cookie found: " + cookie.getName());
-                if("refresh_token".equals(cookie.getName())){
+                if ("refreshToken".equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
@@ -52,14 +51,14 @@ public class CookieUtils {
         return null;
     }
 
+
     /* TESTING */
     public void logCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         System.out.println("Cookies: " + (cookies != null ? Arrays.toString(cookies) : "null"));
-        if (cookies == null){
-            for (Cookie cookie : cookies){
-                System.out.println("Names of the cookie found: " + cookie.getName() + "\n" +
-                        " Value: " + cookie.getValue());
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                System.out.println("Cookie name: " + cookie.getName() + ", value: " + cookie.getValue());
             }
         }
     }
