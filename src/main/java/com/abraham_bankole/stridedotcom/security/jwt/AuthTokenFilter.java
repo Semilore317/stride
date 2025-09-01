@@ -41,6 +41,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             sendErrorResponse(response);
+            return;
         }
         filterChain.doFilter(request, response);
     }
