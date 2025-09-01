@@ -9,7 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-@ControllerAdvice
+@ControllerAdvice // it only affects controllers, need to make exceptions for the JWT stuff separately
 public class GlobalExceptionHandler {
     @ExceptionHandler(EntityExistsException.class)
     public ResponseEntity<String> handleAlreadyExists(EntityExistsException ex) {
