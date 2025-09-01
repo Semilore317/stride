@@ -41,7 +41,6 @@ public class AuthTokenFilter extends OncePerRequestFilter {
             }
         } catch (Exception e) {
             sendErrorResponse(response);
-            return;
         }
         filterChain.doFilter(request, response);
     }
@@ -49,7 +48,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
     private void sendErrorResponse(HttpServletResponse response) throws IOException {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
-        ErrorResponse errorResponse = new ErrorResponse("Invalid access token, please long and try again!");
+        ErrorResponse errorResponse = new ErrorResponse("Invalid access token, please login and try again!");
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonResponse = objectMapper.writeValueAsString(errorResponse);
         response.getWriter().write(jsonResponse);
