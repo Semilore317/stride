@@ -1,5 +1,5 @@
 import React from "react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/separator.jsx";
 import { FaFacebookF, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
