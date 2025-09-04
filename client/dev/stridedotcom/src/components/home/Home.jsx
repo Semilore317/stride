@@ -1,5 +1,5 @@
 import React from 'react'
-import NavBar from "../layout/NavBar.jsx";
+import NavBar from "@/components/layout/NavBar.jsx";
 
 const Home = () => {
     return (
