@@ -3,6 +3,7 @@ import { Outlet } from 'react-router-dom'
 import NavBar from "@/components/layout/NavBar.jsx";
 import Footer from "@/components/layout/Footer.jsx";
 import Hero from "@/components/hero/Hero.jsx";
+import HeroSlider from "@/components/hero/HeroSlider.jsx";
 
 const RootLayout = () => {
   return (
