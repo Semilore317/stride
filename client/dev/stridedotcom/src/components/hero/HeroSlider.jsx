@@ -46,7 +46,7 @@ const HeroSlider = () => {
             {/* Controls */}
             <button
                 onClick={prevSlide}
-                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/40 hover:bg-black/70 p-2 rounded-full text-white z-10"
+                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-black/40 hover:bg-black/70 p-2 rounded-full text-white z-0"
             >
                 <ChevronLeft />
             </button>
