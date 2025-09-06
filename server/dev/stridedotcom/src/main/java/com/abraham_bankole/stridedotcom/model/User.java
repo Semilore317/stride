@@ -1,6 +1,7 @@
 package com.abraham_bankole.stridedotcom.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -44,4 +45,8 @@ public class User {
             inverseJoinColumns = @JoinColumn( name = "role_id", referencedColumnName = "id") // Links to Role's id
     )
     private Collection<Role> roles = new HashSet<>();
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Wishlist wishlist;
+
 }

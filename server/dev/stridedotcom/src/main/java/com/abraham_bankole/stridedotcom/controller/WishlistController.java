@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/wishlist")
+@RequestMapping("${api.prefix}/wishlist")
 @RequiredArgsConstructor
 public class WishlistController {
     private final iWishlistService wishlistService;
