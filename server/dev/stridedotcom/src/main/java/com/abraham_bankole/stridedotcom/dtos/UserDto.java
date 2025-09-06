@@ -2,7 +2,9 @@ package com.abraham_bankole.stridedotcom.dtos;
 
 import com.abraham_bankole.stridedotcom.model.Cart;
 import com.abraham_bankole.stridedotcom.model.Order;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
