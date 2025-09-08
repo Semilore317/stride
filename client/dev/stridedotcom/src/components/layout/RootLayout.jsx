@@ -9,7 +9,7 @@ const RootLayout = () => {
   return (
       <main>
           <NavBar />
-          <Hero />
+          {/* <Hero /> */}
           <div>
               <Outlet/>
           </div>
