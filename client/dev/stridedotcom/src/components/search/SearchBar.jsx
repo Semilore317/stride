@@ -15,11 +15,11 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear }) => {
             {/* Category Select */}
             <Select onValueChange={onCategoryChnage}>
                 <SelectTrigger
-                    className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-purple-600"
+                    className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600"
                 >
                     <SelectValue
                         placeholder="Select category"
-                        className="text-purple-600 dark:text-gray-400"
+                        className="text-black-600 dark:text-gray-400"
                     />
                 </SelectTrigger>
                 <SelectContent>
@@ -36,7 +36,7 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear }) => {
                 type="text"
                 onChange={onChange}
                 placeholder="Search for product category"
-                className="w-full sm:flex-1 text-black dark:text-white placeholder:text-purple-600 dark:placeholder:text-gray-400 bg-white/60 dark:bg-white/10 backdrop-blur-md border-none focus:outline-none focus:ring-0"
+                className="w-full sm:flex-1 text-black dark:text-white placeholder:text-black-600 dark:placeholder:text-gray-400 bg-white/60 dark:bg-white/10 backdrop-blur-md border-none focus:outline-none focus:ring-0"
             />
 
             {/* Clear Button */}
