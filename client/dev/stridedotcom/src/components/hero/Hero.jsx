@@ -7,18 +7,20 @@ const Hero = () => {
     return (
         <section className="relative w-full h-screen bg-black text-white overflow-hidden">
 
-            {/* Background slider with higher z-index so buttons remain clickable */}
+            {/* Background Slider */}
             <div className="absolute inset-0 z-10">
                 <HeroSlider />
             </div>
 
-            {/* Dark overlay for contrast (below content, above slider) */}
-            <div className="absolute inset-0 bg-black/60 z-20 pointer-events-none" />
+            {/* Fullscreen dark overlay (dark mode only) */}
+            //<div className="absolute inset-0 z-20 pointer-events-none dark:bg-black/60" />
+            {/* Dark overlay (light + dark mode handled) */}
+            <div className="absolute inset-0 z-20 pointer-events-none dark:bg-black/30 bg-black/30 transition-colors duration-500" />
 
-            {/* Content wrapper */}
+            {/* Content */}
             <div className="relative z-30 flex flex-col items-center justify-center h-full px-6 text-center max-w-4xl mx-auto space-y-10">
 
-                {/* Welcome Heading */}
+                {/* Heading */}
                 <div className="space-y-6">
                     <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold">
                         Welcome To <span className="text-purple-500">𝕾𝖙𝖗𝖎𝖉𝖊</span>
@@ -41,10 +43,11 @@ const Hero = () => {
                     </div>
                 </div>
 
-                {/* Search Bar Below Heading */}
-                <div className="w-full bg-white/10 backdrop-blur-sm p-4 rounded-lg shadow-md">
+                {/* SearchBar Container (glass in light, dim in dark) */}
+                <div className="w-full bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md transition-colors duration-300">
                     <SearchBar />
                 </div>
+
             </div>
         </section>
     );
