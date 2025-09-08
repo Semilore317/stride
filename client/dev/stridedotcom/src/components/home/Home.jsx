@@ -12,6 +12,10 @@ const dummyProducts = Array.from({ length: 20 }, (_, i) => ({
 }));
 
 const Home = () => {
+
+    const [product, setProducts] = useState([]);
+    const [filteredProducts, setFilteredProducts] = useState([]);
+
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 8;
 
