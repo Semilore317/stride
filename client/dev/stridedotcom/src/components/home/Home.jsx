@@ -85,6 +85,7 @@ const Home = () => {
                                 <h2 className="text-lg font-semibold">{product.name}</h2>
                                 <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{product.description}</p>
                                 <p className="text-purple-600 dark:text-purple-400 font-bold">{product.price}</p>
+                                <p className='text-gray-700 dark:text-gray-300'>{product.inventory} in stock</p>
                                 <Link
                                     to={`products/${product.name}`}
                                     className="mt-4 w-full inline-block bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded transition text-center"
