@@ -17,7 +17,7 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear }) => {
                 onValueChange={onCategoryChnage}
             >
                 <SelectTrigger className="w-full sm:w-48">
-                    <SelectValue placeholder="Select category" />
+                    <SelectValue placeholder="Select category"/>
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>

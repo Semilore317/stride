@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Heart } from 'lucide-react';
+import productImage from '@/assets/images/placeholder.avif'; // Replace with your actual path
 
+// Dummy data with descriptions
 const dummyProducts = Array.from({ length: 20 }, (_, i) => ({
     id: i + 1,
     name: `Product ${i + 1}`,
     price: `$${(Math.random() * 100).toFixed(2)}`,
-    image: `https://source.unsplash.com/300x300?product&sig=${i}`,
+    description: `This is a brief description of Product ${i + 1}. It highlights key features and value.`,
+    image: productImage,
 }));
 
 const Home = () => {
@@ -38,21 +41,20 @@ const Home = () => {
                         />
 
                         {/* Wishlist & Cart Icons */}
-                        <div
-                            className="absolute top-2 right-2 flex space-x-2 transition md:opacity-0 md:group-hover:opacity-100"
-                        >
-                            <button className="bg-black/10 dark:bg-black/70 hover:bg-purple-200 dark:hover:bg-purple-700 p-2 rounded-full text-black dark:text-white">
+                        <div className="absolute top-2 right-2 flex space-x-2 transition md:opacity-0 md:group-hover:opacity-100">
+                            <button className="bg-black/10 dark:bg-black/70 hover:bg-purple-200 dark:hover:bg-purple-700 p-2 rounded-full text-black dark:text-white cursor-pointer">
                                 <Heart className="w-4 h-4" />
                             </button>
-                            <button className="bg-black/10 dark:bg-black/70 hover:bg-purple-200 dark:hover:bg-purple-700 p-2 rounded-full text-black dark:text-white">
+                            <button className="bg-black/10 dark:bg-black/70 hover:bg-purple-200 dark:hover:bg-purple-700 p-2 rounded-full text-black dark:text-white cursor-pointer">
                                 <ShoppingCart className="w-4 h-4" />
                             </button>
                         </div>
 
                         <div className="p-4">
-                            <h2 className="text-lg font-semibold mb-2">{product.name}</h2>
+                            <h2 className="text-lg font-semibold">{product.name}</h2>
+                            <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{product.description}</p>
                             <p className="text-purple-600 dark:text-purple-400 font-bold">{product.price}</p>
-                            <button className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded transition">
+                            <button className="mt-4 w-full bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded transition cursor-pointer">
                                 View Product
                             </button>
                         </div>
