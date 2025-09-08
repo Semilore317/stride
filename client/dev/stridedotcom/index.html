@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <!--
@@ -10,6 +10,21 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <script type="module" src="/src/main.jsx">
+      const toggleTheme = () => {
+        const root = document.documentElement;
+        const isDark = root.classList.toggle('dark');
+        localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      };
+
+      // On app load
+      useEffect(() => {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark' || (!stored && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+          document.documentElement.classList.add('dark');
+        }
+      }, []);
+
+    </script>
   </body>
 </html>
