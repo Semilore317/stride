@@ -10,6 +10,7 @@ import { Link } from 'react-router-dom';
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
+    const [errorMessage, setErrorMessage] = useState(null);
     const { searchQuery, selectedCategory } = useSelector((state) => state.search);
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -18,14 +19,23 @@ const Home = () => {
     useEffect(() => {
         const getProducts = async () => {
             try {
-                const response = await getDistinctProductsByName();
-                setProducts(response.data);
+                const data = await getDistinctProductsByName();
+                console.log("Fetched data:", data); // ← add this line to debug
+                if (data && Array.isArray(data)) {
+                    setProducts(data);
+                } else {
+                    throw new Error("Fetched data is not an array.");
+                }
             } catch (error) {
-                toast.error(error.message);
+                const message = error?.message || "Unknown error occurred";
+                setErrorMessage(message);
+                toast.error("Error fetching products: " + message);
             }
         };
         getProducts();
     }, []);
+
+
 
     useEffect(() => {
         const results = products.filter((product) => {
@@ -55,8 +65,18 @@ const Home = () => {
             <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
                 <h1 className="text-3xl font-bold mb-6 text-center">Stride.com</h1>
 
+                {/* Error Message Display */}
+                {errorMessage && (
+                    <div className="mb-6 text-center">
+                        <p className="text-red-600 dark:text-red-400 font-medium text-sm bg-red-100 dark:bg-red-900/20 border border-red-300 dark:border-red-700 px-4 py-2 rounded-md inline-block">
+                            {errorMessage}
+                        </p>
+                    </div>
+                )}
+
+                {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
-                    { currentProducts && currentProducts.map((product) => (
+                    {currentProducts && currentProducts.map((product) => (
                         <div
                             key={product.id}
                             className="bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition relative group"
@@ -97,6 +117,7 @@ const Home = () => {
                     ))}
                 </div>
 
+                {/* 3Pagination */}
                 <div className="flex justify-center items-center space-x-2">
                     <button
                         onClick={() => paginate(currentPage - 1)}
@@ -110,11 +131,10 @@ const Home = () => {
                         <button
                             key={page}
                             onClick={() => paginate(page)}
-                            className={`px-4 py-2 text-sm rounded transition ${
-                                currentPage === page
+                            className={`px-4 py-2 text-sm rounded transition ${currentPage === page
                                     ? 'bg-purple-600 text-white font-bold'
                                     : 'bg-white border border-black/10 hover:bg-purple-100 dark:bg-black/60 dark:text-white dark:border-white/10 dark:hover:bg-purple-600'
-                            }`}
+                                }`}
                         >
                             {page}
                         </button>
