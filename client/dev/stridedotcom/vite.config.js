@@ -13,11 +13,23 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // Proxy /products/* requests to your backend (adjust port below)
-      '/products': {
-        target: 'http://localhost:9090',  
-        changeOrigin: true,  // Helps with CORS by setting the origin header
-        secure: false,  // Set to true if your backend uses HTTPS in dev
+      // Proxy /api/* to Spring Boot (includes /api/v1/images/...)
+      '/api': {
+        target: 'http://localhost:9090',  // Your backend port
+        changeOrigin: true,
+        secure: false,
+        // NEW: Configure for debugging and binary handling
+        configure: (proxy, options) => {
+          proxy.on('proxyReq', (proxyReq, req, res) => {
+            console.log('Proxying request:', req.method, req.url);  // Logs in Vite terminal
+          });
+          proxy.on('proxyRes', (proxyRes, req, res) => {
+            console.log('Proxied response:', proxyRes.statusCode, 'for', req.url);  // Check if 200
+          });
+          proxy.on('error', (err, req, res) => {
+            console.log('Proxy error for', req.url, ':', err.message);
+          });
+        },
       },
     },
   },
