@@ -3,11 +3,14 @@ import { Button } from "@/components/ui/button";
 import HeroSlider from "@/components/hero/HeroSlider.jsx";
 import SearchBar from "@/components/search/SearchBar.jsx";
 import { getAllCategories } from "@/components/services/CategoryService";
-import { setSearchQuery } from "@/store/features/SearchSlice";
-import { useDispatch } from "react-redux";
+import { setSearchQuery, setSelectedCategory } from "@/store/features/SearchSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const Hero = () => {
-    const dispatch= useDispatch();
+    const dispatch = useDispatch();
+
+    const searchQuery = useSelector((state) => state.search.searchQuery);
+    const selectedCategory = useSelector((state) => state.search.selectedCategory);
 
     const [categories, setCategories] = useState([]);
 
@@ -15,7 +18,7 @@ const Hero = () => {
         const fetchCategories = async () => {
             try {
                 const data = await getAllCategories();
-                setCategories(data); // already unwrapped
+                setCategories(data);
             } catch (error) {
                 console.error("Failed to fetch categories:", error);
             }
@@ -23,6 +26,11 @@ const Hero = () => {
 
         fetchCategories();
     }, []);
+
+    const handleClear = () => {
+        dispatch(setSearchQuery(""));
+        dispatch(setSelectedCategory("all"));
+    };
 
     return (
         <section className="relative w-full h-screen bg-black text-white overflow-hidden">
@@ -56,13 +64,18 @@ const Hero = () => {
                         >
                             Today's Deal
                         </Button>
-
                     </div>
                 </div>
 
-                {/* Pass categories into SearchBar */}
+                {/* Search Bar */}
                 <div className="w-full bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md transition-colors duration-300">
-                    <SearchBar categories={categories} onChange={(e) => dispatch(setSearchQuery(e.target.value))} value="" />
+                    <SearchBar
+                        value={searchQuery}
+                        onChange={(e) => dispatch(setSearchQuery(e.target.value))}
+                        onCategoryChange={(val) => dispatch(setSelectedCategory(val))}
+                        onClear={handleClear}
+                        categories={categories}
+                    />
                 </div>
             </div>
         </section>
