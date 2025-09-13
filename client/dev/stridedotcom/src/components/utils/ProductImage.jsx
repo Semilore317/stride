@@ -14,7 +14,7 @@ const ProductImage = ({ productId, className = '', alt = 'Product Image' }) => {
     };
 
     const handleImageLoad = () => {
-        console.log('Image loaded successfully for ID:', productId);
+        //console.log('Image loaded successfully for ID:', productId);
     };
 
     return (
