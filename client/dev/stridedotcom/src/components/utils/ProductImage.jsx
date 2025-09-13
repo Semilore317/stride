@@ -1,34 +1,31 @@
-import React, { useEffect } from 'react'
+import React from 'react';
 
-const ProductImage = ({productId}) => {
-    const [productImage, setProductImage] = React.useState(null);
-    useEffect(() => {
-        const fetchProductImage  = async (id) => {
-            try{
-                const response = await fetch(`https://localhost:9090/api/v1/images/image/download/${id}`);
-                const blob = await response.blob();
-                const reader = new FileReader();
-                reader.onloadend = () => {
-                    setProductImage(reader.result);
-                };
-                reader.readAsDataURL(blob);
-            }catch (error){
-                console.error("Error fetching image:", error);
-            }
-            
-        }
+const ProductImage = ({ productId, className = '', alt = 'Product Image' }) => {
+    if (!productId) return null;
 
-        if(productId){
-            fetchProductImage(productId);
-        }
-    }, [productId]);
+    // Construct relative URL (proxied to backend via Vite config)
+    const imageUrl = `/api/v1/images/image/download/${productId}`;
 
-    if(!productId) return null;
-  return (
-    <div>
-        <img src={productImage} alt='Product Image'/>
-    </div>
-  )
-}
+    const handleImageError = (e) => {
+        console.error('Image load failed for ID:', productId);
+        console.error('URL attempted:', e.target.src);
+        // Optional: Set fallback (add a placeholder in public/)
+        e.target.src = '/placeholder-image.jpg';  // Or a default base64 image
+    };
 
-export default ProductImage
+    const handleImageLoad = () => {
+        console.log('Image loaded successfully for ID:', productId);
+    };
+
+    return (
+        <img
+            src={imageUrl}
+            alt={alt}
+            className={className}
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+        />
+    );
+};
+
+export default ProductImage;

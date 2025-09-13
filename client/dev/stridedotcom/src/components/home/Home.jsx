@@ -5,7 +5,6 @@ import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { getDistinctProductsByName } from '../services/ProductService';
 import { Link } from 'react-router-dom';
-
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
@@ -15,17 +14,24 @@ const Home = () => {
 
     // Safer Redux selector with defaults
     const searchState = useSelector((state) => state.search || {});
-    const searchQuery = (searchState.searchQuery || '').toString(); // Ensure it's a string
+    const searchQuery = (searchState.searchQuery || '').toString();
     const selectedCategory = (searchState.selectedCategory || 'all').toString();
+
+    // Helper function to format price with Naira symbol
+    const formatPrice = (price) => {
+        if (!price) return '₦0.00'; // Fallback if price is null/undefined
+        return new Intl.NumberFormat("en-NG", {
+            style: "currency",
+            currency: "NGN",
+            minimumFractionDigits: 2,
+        }).format(price);
+    };
 
     useEffect(() => {
         const getProducts = async () => {
             try {
-                const response = await getDistinctProductsByName();  // Still { message: "success", data: [...] }
-                //console.log('Raw response:', response);  // Keep for debugging
-                const productsData = response.data || [];  // Extract the array; fallback to empty if missing
-                //console.log('Extracted products array:', productsData);
-                //console.log('Is Array?', Array.isArray(productsData));
+                const response = await getDistinctProductsByName();
+                const productsData = response.data || [];
                 if (!Array.isArray(productsData)) {
                     throw new Error("Fetched products is not an array");
                 }
@@ -43,7 +49,7 @@ const Home = () => {
 
     useEffect(() => {
         const results = products.filter((product) => {
-            if (!product || !product.name) return false; // Guard against invalid products
+            if (!product || !product.name) return false;
             const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === 'all' ||
                 (product.category && typeof product.category === 'object' && product.category.name &&
@@ -78,7 +84,7 @@ const Home = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
                     {currentProducts.map((product) => (
                         <div
-                            key={product.id || product.name} // Fallback key if id missing
+                            key={product.id || product.name}
                             className="bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition relative group"
                         >
                             <Link to={`products/${product.name}`}>
@@ -95,7 +101,9 @@ const Home = () => {
                             <div className="p-4">
                                 <h2 className="text-lg font-semibold">{product.name}</h2>
                                 <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{product.description}</p>
-                                <p className="text-purple-600 dark:text-purple-400 font-bold">{product.price}</p>
+                                <p className="text-purple-600 dark:text-purple-400 font-bold">
+                                    {formatPrice(product.price)}  {/* Updated here */}
+                                </p>
                                 <p className="text-gray-700 dark:text-gray-300">{product.inventory} in stock</p>
                                 <Link
                                     to={`products/${product.name}`}
