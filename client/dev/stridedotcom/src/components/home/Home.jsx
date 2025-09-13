@@ -18,7 +18,7 @@ const Home = () => {
     const searchQuery = (searchState.searchQuery || '').toString();
     const selectedCategory = (searchState.selectedCategory || 'all').toString();
 
-    // Helper function to format price with Naira symbol
+    // Helper method to format price with Naira symbol
     const formatPrice = (price) => {
         if (!price) return '₦0.00'; // Fallback if price is null/undefined
         return new Intl.NumberFormat("en-NG", {
@@ -48,8 +48,9 @@ const Home = () => {
         getProducts();
     }, []);
 
+    // implement the searchQuery
     useEffect(() => {
-        const results = products.filter((product) => {
+        const results = products.filter((product) => {0
             if (!product || !product.name) return false;
             const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === 'all' ||

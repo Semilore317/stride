@@ -8,12 +8,12 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-const SearchBar = ({ onChange, onCategoryChnage, onClear, categories = [] }) => {
+const SearchBar = ({ value, onChange, onCategoryChange, onClear, categories = [] }) => {
     return (
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
 
             {/* Category Select */}
-            <Select onValueChange={onCategoryChnage}>
+            <Select onValueChange={onCategoryChange}>
                 <SelectTrigger className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600">
                     <SelectValue
                         placeholder="Select category"
@@ -33,6 +33,7 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear, categories = [] }) => 
             {/* Search Input */}
             <Input
                 type="text"
+                value={value}
                 onChange={onChange}
                 placeholder="Search for products..."
                 className="w-full sm:flex-1 text-black dark:text-white placeholder:text-black-600 dark:placeholder:text-gray-400 bg-white/60 dark:bg-white/10 backdrop-blur-md border-none focus:outline-none focus:ring-0"

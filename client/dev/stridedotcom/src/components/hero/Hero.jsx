@@ -3,8 +3,12 @@ import { Button } from "@/components/ui/button";
 import HeroSlider from "@/components/hero/HeroSlider.jsx";
 import SearchBar from "@/components/search/SearchBar.jsx";
 import { getAllCategories } from "@/components/services/CategoryService";
+import { setSearchQuery } from "@/store/features/SearchSlice";
+import { useDispatch } from "react-redux";
 
 const Hero = () => {
+    const dispatch= useDispatch();
+
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -47,7 +51,7 @@ const Hero = () => {
                             variant="outline"
                             size="lg"
                             className="text-lg font-bold cursor-pointer border-white text-purple-600 dark:text-purple-400
-               hover:bg-purple-600 hover:text-white dark:hover:bg-purple-600 dark:hover:text-white
+               hover:bg-purple-900 hover:text-white dark:hover:bg-purple-600 dark:hover:text-white
                transition-colors duration-300"
                         >
                             Today's Deal
@@ -58,7 +62,7 @@ const Hero = () => {
 
                 {/* Pass categories into SearchBar */}
                 <div className="w-full bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md transition-colors duration-300">
-                    <SearchBar categories={categories} />
+                    <SearchBar categories={categories} onChange={(e) => dispatch(setSearchQuery(e.target.value))} value="" />
                 </div>
             </div>
         </section>
