@@ -1,5 +1,6 @@
 import React from 'react'
 import { Outlet } from 'react-router-dom'
+import { ToastContainer } from 'react-toastify';
 import NavBar from "@/components/layout/NavBar.jsx";
 import Footer from "@/components/layout/Footer.jsx";
 import Hero from "@/components/hero/Hero.jsx";
@@ -13,6 +14,7 @@ const RootLayout = () => {
           <div>
               <Outlet/>
           </div>
+          <ToastContainer />
           <Footer/>
       </main>
   )
