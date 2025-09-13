@@ -1,5 +1,6 @@
 import {Route, RouterProvider, createBrowserRouter, createRoutesFromElements} from 'react-router-dom'
 import RootLayout from "@/components/layout/RootLayout.jsx";
+import 'react-toastify/dist/ReactToastify.css';
 import Home from "@/components/home/Home.jsx";
 
 function App() {
