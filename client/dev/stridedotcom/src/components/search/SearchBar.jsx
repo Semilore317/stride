@@ -8,15 +8,13 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 
-const SearchBar = ({ onChange, onCategoryChnage, onClear }) => {
+const SearchBar = ({ onChange, onCategoryChnage, onClear, categories = [] }) => {
     return (
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
 
             {/* Category Select */}
             <Select onValueChange={onCategoryChnage}>
-                <SelectTrigger
-                    className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600"
-                >
+                <SelectTrigger className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600">
                     <SelectValue
                         placeholder="Select category"
                         className="text-black-600 dark:text-gray-400"
@@ -24,10 +22,11 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear }) => {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
-                    <SelectItem value="men">Men</SelectItem>
-                    <SelectItem value="women">Women</SelectItem>
-                    <SelectItem value="watches">Formal Wear</SelectItem>
-                    <SelectItem value="Sports Wear">Sports Wear</SelectItem>
+                    {categories.map((category) => (
+                        <SelectItem key={category.id} value={category.name.toLowerCase()}>
+                            {category.name}
+                        </SelectItem>
+                    ))}
                 </SelectContent>
             </Select>
 
