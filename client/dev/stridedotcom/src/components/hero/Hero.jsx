@@ -46,10 +46,13 @@ const Hero = () => {
                         <Button
                             variant="outline"
                             size="lg"
-                            className="text-lg border-white text-purple font-bold hover:bg-purple-900 hover:text-white cursor-pointer"
+                            className="text-lg font-bold cursor-pointer border-white text-purple-600 dark:text-purple-400
+               hover:bg-purple-600 hover:text-white dark:hover:bg-purple-600 dark:hover:text-white
+               transition-colors duration-300"
                         >
                             Today's Deal
                         </Button>
+
                     </div>
                 </div>
 

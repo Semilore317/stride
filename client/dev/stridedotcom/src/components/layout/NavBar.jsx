@@ -3,6 +3,8 @@ import { Link, NavLink as RouterNavLink } from 'react-router-dom';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet.jsx';
 import { Button } from '@/components/ui/button.jsx';
 import { Menu, Moon, Sun } from 'lucide-react';
+import ThemeToggleButton from "@/components/ui/ThemeToggleButton.jsx";
+
 
 const NavBar = () => {
     const [open, setOpen] = useState(false);
@@ -61,12 +63,13 @@ const NavBar = () => {
                                 ? <Sun className="text-yellow-400 w-6 h-6" />
                                 : <Moon className="text-blue-500 w-6 h-6" />}
                         </button>
+
                     </div>
 
                     {/* Mobile Menu */}
                     <div className="md:hidden flex items-center gap-2">
                         {/* Theme Toggle (Mobile) */}
-                        <button
+                        {/* <button
                             onClick={toggleTheme}
                             className="transition-transform duration-500 hover:rotate-180"
                             aria-label="Toggle Theme"
@@ -74,8 +77,8 @@ const NavBar = () => {
                             {isDark
                                 ? <Sun className="text-yellow-400 w-6 h-6" />
                                 : <Moon className="text-blue-500 w-6 h-6" />}
-                        </button>
-
+                        </button> */}
+                        <ThemeToggleButton isDark={isDark} toggleTheme={toggleTheme} />
                         <Sheet open={open} onOpenChange={setOpen}>
                             <SheetTrigger asChild>
                                 <Button variant="ghost" size="icon" className="p-0">
