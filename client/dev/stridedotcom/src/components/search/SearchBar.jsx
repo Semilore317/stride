@@ -29,7 +29,7 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear, categories = []
                     ))}
                 </SelectContent>
             </Select>
-
+            
             {/* Search Input */}
             <Input
                 type="text"
