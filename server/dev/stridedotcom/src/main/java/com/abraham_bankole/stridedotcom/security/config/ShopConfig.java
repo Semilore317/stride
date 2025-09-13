@@ -19,7 +19,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Configuration //directs Spring to find Beans in this class
@@ -48,8 +52,7 @@ public class ShopConfig {
 
     @Bean
     public AuthTokenFilter authTokenFilter() {
-        return new AuthTokenFilter()
-                ;
+        return new AuthTokenFilter();
     }
 
     @Bean
@@ -65,13 +68,30 @@ public class ShopConfig {
         return authProvider;
     }
 
+    // NEW: CORS Configuration Bean
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5174"));  // Your Vite frontend (use patterns for dev flexibility)
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers (e.g., Authorization for JWT)
+        configuration.setAllowCredentials(true);  // Enable for JWT cookies if needed
+        configuration.setMaxAge(3600L);  // Cache preflight responses for 1 hour
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);  // Apply to all endpoints
+        return source;
+    }
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // NEW: Integrate CORS (uses the bean above)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authorizeHttpRequests(auth -> auth.requestMatchers(SECURED_URLS.toArray(String[]::new))
-                        .authenticated()
+                .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/api/v1/auth/**", "/api/v1/products/**").permitAll()  // NEW: Allow public access to auth & products
+                        .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
                         .anyRequest().permitAll());
 
         http.authenticationProvider(authenticationProvider());
