@@ -34,7 +34,7 @@ const SearchBar = ({ onChange, onCategoryChnage, onClear, categories = [] }) => 
             <Input
                 type="text"
                 onChange={onChange}
-                placeholder="Search for product category"
+                placeholder="Search for products..."
                 className="w-full sm:flex-1 text-black dark:text-white placeholder:text-black-600 dark:placeholder:text-gray-400 bg-white/60 dark:bg-white/10 backdrop-blur-md border-none focus:outline-none focus:ring-0"
             />
 

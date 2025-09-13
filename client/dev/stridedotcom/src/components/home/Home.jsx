@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { toast, ToastContainer } from 'react-toastify';
 import { getDistinctProductsByName } from '../services/ProductService';
 import { Link } from 'react-router-dom';
+
 const Home = () => {
     const [products, setProducts] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
