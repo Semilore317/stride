@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// TODO: Test endpoints in Postman 
+
 @RestController
 @RequestMapping("${api.prefix}/wishlist")
 @RequiredArgsConstructor
