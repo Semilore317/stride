@@ -7,7 +7,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-
+// fix liquid glass effect
 const SearchBar = ({ value, onChange, onCategoryChange, onClear, categories = [] }) => {
     return (
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
