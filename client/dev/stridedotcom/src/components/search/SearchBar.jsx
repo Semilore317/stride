@@ -7,8 +7,30 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-// fix liquid glass effect
+
 const SearchBar = ({ value, onChange, onCategoryChange, onClear, categories = [] }) => {
+    // Default fashion categories
+    const defaultCategories = [
+        { id: 1, name: "All Categories", value: "all" },
+        { id: 2, name: "Men's Clothing", value: "mens-clothing" },
+        { id: 3, name: "Women's Clothing", value: "womens-clothing" },
+        { id: 4, name: "Footwear", value: "footwear" },
+        { id: 5, name: "Accessories", value: "accessories" },
+        { id: 6, name: "Bags", value: "bags" },
+        { id: 7, name: "Jewelry", value: "jewelry" },
+        { id: 8, name: "Watches", value: "watches" },
+        { id: 9, name: "Beauty & Skincare", value: "beauty" },
+        { id: 10, name: "Fragrances", value: "fragrances" },
+    ];
+
+    // Merge default + custom categories (avoids duplicates)
+    const allCategories = [
+        ...defaultCategories,
+        ...categories.filter(
+            (cat) => !defaultCategories.some((def) => def.value === cat.name?.toLowerCase())
+        ),
+    ];
+
     return (
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
 
@@ -20,16 +42,16 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear, categories = []
                         className="text-black-600 dark:text-gray-400"
                     />
                 </SelectTrigger>
+
                 <SelectContent>
-                    <SelectItem value="all">All Categories</SelectItem>
-                    {categories.map((category) => (
-                        <SelectItem key={category.id} value={category.name.toLowerCase()}>
+                    {allCategories.map((category) => (
+                        <SelectItem key={category.id || category.name} value={category.value}>
                             {category.name}
                         </SelectItem>
                     ))}
                 </SelectContent>
             </Select>
-            
+
             {/* Search Input */}
             <Input
                 type="text"
