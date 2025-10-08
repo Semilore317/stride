@@ -49,6 +49,13 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse("Added Product Successfully!", productDto));
     }
 
+    @PostMapping("/add/bulk")
+    public ResponseEntity<ApiResponse> addBulkProduct(@RequestBody List<AddProductRequest> products) {
+        List<Product> addedProducts = productService.addBulkProducts(products);
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(addedProducts);
+        return ResponseEntity.ok(new ApiResponse("Added Bulk Products Successfully!", convertedProducts));
+    }
+
     @PutMapping("/product/{productId}/update")
     public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId) {
         Product theProduct = productService.updateProduct(request, productId);
