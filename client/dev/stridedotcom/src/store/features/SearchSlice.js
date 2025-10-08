@@ -12,7 +12,7 @@ const searchSlice = createSlice({
         setSearchQuery(state, action) {
             state.searchQuery = action.payload;
         },
-        setSelectedCategory(state, action) {
+        setSelectedCategory: (state, action) => {
             state.selectedCategory = action.payload;
         },
     },
