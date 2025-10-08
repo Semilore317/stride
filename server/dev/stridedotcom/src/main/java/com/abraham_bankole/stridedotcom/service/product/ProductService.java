@@ -119,6 +119,30 @@ public class ProductService implements iProductService {
                 });
     }
 
+    public List<Product> addBulkProducts(List<AddProductRequest> requests) {
+        List<Product> savedProducts = new ArrayList<>();
+
+        for (AddProductRequest request : requests) {
+            if (productExists(request.getName(), request.getBrand())) {
+                // Skip duplicates instead of throwing, to allow partial success
+                continue;
+            }
+
+            Category category = ofNullable(categoryRepository.findByName(request.getCategory().getName()))
+                    .orElseGet(() -> {
+                        Category newCategory = new Category(request.getCategory().getName());
+                        return categoryRepository.save(newCategory);
+                    });
+
+            request.setCategory(category);
+            Product product = createProduct(request, category);
+            savedProducts.add(productRepository.save(product));
+        }
+
+        return savedProducts;
+    }
+
+
     @Override
     public List<Product> getProductsByName(String name) {
         //return productRepository.findByName(name);

@@ -33,4 +33,5 @@ public interface iProductService {
     // pushes it to the interface level
     ProductDto convertToDto(Product product);
 
+    List<Product> addBulkProducts(List<AddProductRequest> products);
 }
