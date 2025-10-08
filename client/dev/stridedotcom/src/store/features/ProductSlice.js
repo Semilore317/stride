@@ -27,7 +27,7 @@ const productSlice = createSlice({
                 state.products = action.payload; // already the array
                 state.errorMessage = null;
             })
-            .addCase(getAllproducts.rejected, (state, action) => {
+            .addCase(getAllProducts.rejected, (state, action) => {
                 state.errorMessage = action.error.message;
             })
     },

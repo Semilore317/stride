@@ -20,7 +20,7 @@ const Home = () => {
 
     // Helper method to format price with Naira symbol
     const formatPrice = (price) => {
-        if (!price) return '₦0.00'; // Fallback if price is null/undefined
+        if (!price) return '₦0.00';
         return new Intl.NumberFormat("en-NG", {
             style: "currency",
             currency: "NGN",
@@ -48,14 +48,14 @@ const Home = () => {
         getProducts();
     }, []);
 
-    // implement the searchQuery
+    // implement the searchQuery and category filter
     useEffect(() => {
         const results = products.filter((product) => {
             if (!product || !product.name) return false;
             const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === 'all' ||
                 (product.category && typeof product.category === 'object' && product.category.name &&
-                 product.category.name.toLowerCase().includes(selectedCategory.toLowerCase()));
+                    product.category.name.toLowerCase().includes(selectedCategory.toLowerCase()));
             return matchesQuery && matchesCategory;
         });
         setFilteredProducts(results);
@@ -73,7 +73,6 @@ const Home = () => {
             <Hero />
             <ToastContainer />
             <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-                {/* <h1 className="text-3xl font-bold mb-6 text-center">Stride.com</h1> */}
 
                 {errorMessage && (
                     <div className="mb-6 text-center">
@@ -87,7 +86,7 @@ const Home = () => {
                     {currentProducts.map((product) => (
                         <div
                             key={product.id || product.name}
-                            className="bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition relative group"
+                            className="bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition flex flex-col h-full"
                         >
                             <Link to={`products/${product.name}`}>
                                 <div className="w-full h-48 overflow-hidden">
@@ -100,11 +99,16 @@ const Home = () => {
                                 </div>
                             </Link>
 
-                            <div className="p-4">
-                                <h2 className="text-lg font-semibold">{product.name}</h2>
-                                <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{product.description}</p>
+                            <div className="p-4 flex flex-col flex-1">
+                                {/* Name + description stretches */}
+                                <div className="flex-1">
+                                    <h2 className="text-lg font-semibold">{product.name}</h2>
+                                    <p className="text-sm text-gray-700 dark:text-gray-300 mb-2">{product.description}</p>
+                                </div>
+
+                                {/* Bottom section stays at bottom */}
                                 <p className="text-purple-600 dark:text-purple-400 font-bold">
-                                    {formatPrice(product.price)}  {/* Updated here */}
+                                    {formatPrice(product.price)}
                                 </p>
                                 <p className="text-gray-700 dark:text-gray-300">{product.inventory} in stock</p>
                                 <Link
@@ -115,6 +119,7 @@ const Home = () => {
                                 </Link>
                             </div>
                         </div>
+
                     ))}
                 </div>
 
@@ -132,11 +137,10 @@ const Home = () => {
                             <button
                                 key={page}
                                 onClick={() => paginate(page)}
-                                className={`px-4 py-2 text-sm rounded transition ${
-                                    currentPage === page
-                                        ? 'bg-purple-600 text-white font-bold'
-                                        : 'bg-white border border-black/10 hover:bg-purple-100 dark:bg-black/60 dark:text-white dark:border-white/10 dark:hover:bg-purple-600'
-                                }`}
+                                className={`px-4 py-2 text-sm rounded transition ${currentPage === page
+                                    ? 'bg-purple-600 text-white font-bold'
+                                    : 'bg-white border border-black/10 hover:bg-purple-100 dark:bg-black/60 dark:text-white dark:border-white/10 dark:hover:bg-purple-600'
+                                    }`}
                             >
                                 {page}
                             </button>
