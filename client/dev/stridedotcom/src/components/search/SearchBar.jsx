@@ -10,10 +10,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { getAllCategories } from "../../store/features/CategorySlice";
-// fix liquid glass effect
+
 const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
     const dispatch = useDispatch();
     const { categories } = useSelector((state) => state.category);
+    const searchQuery = useSelector((state) => state.search.searchQuery);
+    const selectedCategory = useSelector((state) => state.search.selectedCategory);
 
     const handleCategoryChange = (category) => {
         onCategoryChange(category);
@@ -22,16 +24,13 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
     useEffect(() => {
         dispatch(getAllCategories());
     }, [dispatch]);
+
     return (
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
-
             {/* Category Select */}
-            <Select onValueChange={handleCategoryChange}>
+            <Select value={selectedCategory} onValueChange={handleCategoryChange}>
                 <SelectTrigger className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600">
-                    <SelectValue
-                        placeholder="Select category"
-                        className="text-black-600 dark:text-gray-400"
-                    />
+                    <SelectValue placeholder="Select category" />
                 </SelectTrigger>
                 <SelectContent>
                     <SelectItem value="all">All Categories</SelectItem>
@@ -42,11 +41,11 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
                     ))}
                 </SelectContent>
             </Select>
-            
+
             {/* Search Input */}
             <Input
                 type="text"
-                value={value}
+                value={searchQuery}
                 onChange={onChange}
                 placeholder="Search for products..."
                 className="w-full sm:flex-1 text-black dark:text-white placeholder:text-black-600 dark:placeholder:text-gray-400 bg-white/60 dark:bg-white/10 backdrop-blur-md border-none focus:outline-none focus:ring-0"
