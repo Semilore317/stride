@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import HeroSlider from "@/components/hero/HeroSlider.jsx";
 import SearchBar from "@/components/search/SearchBar.jsx";
 import { getAllCategories } from "@/components/services/CategoryService";
-import { setSearchQuery, setSelectedCategory } from "@/store/features/SearchSlice";
+import { setSearchQuery, setSelectedCategory, clearFilters } from "@/store/features/SearchSlice";
 import { useDispatch, useSelector } from "react-redux";
 
 const Hero = () => {
@@ -13,6 +13,10 @@ const Hero = () => {
     const selectedCategory = useSelector((state) => state.search.selectedCategory);
 
     const [categories, setCategories] = useState([]);
+
+    const handleClearFilters = () => {
+        dispatch(clearFilters());
+    };
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -73,7 +77,7 @@ const Hero = () => {
                         value={searchQuery}
                         onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                         onCategoryChange={(category) => dispatch(setSelectedCategory(category))}
-                        onClear={handleClear}
+                        onClear={handleClearFilters}
                         categories={categories}
                     />
                 </div>

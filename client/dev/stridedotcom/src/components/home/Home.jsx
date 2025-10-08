@@ -73,7 +73,7 @@ const Home = () => {
             <Hero />
             <ToastContainer />
             <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-                <h1 className="text-3xl font-bold mb-6 text-center">Stride.com</h1>
+                {/* <h1 className="text-3xl font-bold mb-6 text-center">Stride.com</h1> */}
 
                 {errorMessage && (
                     <div className="mb-6 text-center">
