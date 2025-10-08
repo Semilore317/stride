@@ -72,7 +72,7 @@ const Hero = () => {
                     <SearchBar
                         value={searchQuery}
                         onChange={(e) => dispatch(setSearchQuery(e.target.value))}
-                        onCategoryChange={(val) => dispatch(setSelectedCategory(val))}
+                        onCategoryChange={(category) => dispatch(setSelectedCategory(category))}
                         onClear={handleClear}
                         categories={categories}
                     />

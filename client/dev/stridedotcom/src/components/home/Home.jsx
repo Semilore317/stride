@@ -50,7 +50,7 @@ const Home = () => {
 
     // implement the searchQuery
     useEffect(() => {
-        const results = products.filter((product) => {0
+        const results = products.filter((product) => {
             if (!product || !product.name) return false;
             const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
             const matchesCategory = selectedCategory === 'all' ||

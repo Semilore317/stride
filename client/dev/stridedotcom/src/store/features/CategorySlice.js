@@ -26,16 +26,10 @@ const categorySlice = createSlice({
             .addCase(getAllCategories.fulfilled, (state, action) => {
                 state.categories = action.payload; // already the array
                 state.errorMessage = null;
-                state.isLoading = false;
             })
             .addCase(getAllCategories.rejected, (state, action) => {
                 state.errorMessage = action.error.message;
-                state.isLoading = false;
             })
-            .addCase(getAllCategories.pending, (state) => {
-                state.errorMessage = null;
-                state.isLoading = true;
-            });
     },
 });
 
