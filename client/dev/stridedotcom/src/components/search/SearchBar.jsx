@@ -15,6 +15,10 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
     const dispatch = useDispatch();
     const { categories } = useSelector((state) => state.category);
 
+    const handleCategoryChange = (category) => {
+        onCategoryChange(category);
+    };
+
     useEffect(() => {
         dispatch(getAllCategories());
     }, [dispatch]);
@@ -22,7 +26,7 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
         <div className="w-full flex flex-col sm:flex-row items-center gap-4 mt-0">
 
             {/* Category Select */}
-            <Select onValueChange={onCategoryChange}>
+            <Select onValueChange={handleCategoryChange}>
                 <SelectTrigger className="w-full sm:w-48 text-black dark:text-white bg-white/60 dark:bg-white/10 backdrop-blur-md shadow-sm border-none focus:ring-0 focus:outline-none placeholder:text-black-600">
                     <SelectValue
                         placeholder="Select category"
@@ -38,7 +42,7 @@ const SearchBar = ({ value, onChange, onCategoryChange, onClear }) => {
                     ))}
                 </SelectContent>
             </Select>
-            *
+            
             {/* Search Input */}
             <Input
                 type="text"
