@@ -1,40 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Button } from "@/components/ui/button";
 import HeroSlider from "@/components/hero/HeroSlider.jsx";
 import SearchBar from "@/components/search/SearchBar.jsx";
-import { getAllCategories } from "@/components/services/CategoryService";
-import { setSearchQuery, setSelectedCategory, clearFilters } from "@/store/features/SearchSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { getAllCategories } from "@/store/features/categorySlice.js";
+import {
+    setSearchQuery,
+    setSelectedCategory,
+    clearFilters,
+} from "@/store/features/searchSlice.js";
 
 const Hero = () => {
     const dispatch = useDispatch();
 
-    const searchQuery = useSelector((state) => state.search.searchQuery);
-    const selectedCategory = useSelector((state) => state.search.selectedCategory);
-
-    const [categories, setCategories] = useState([]);
-
-    const handleClearFilters = () => {
-        dispatch(clearFilters());
-    };
+    const { searchQuery } = useSelector((state) => state.search);
+    const { categories, isLoading } = useSelector((state) => state.category);
 
     useEffect(() => {
-        const fetchCategories = async () => {
-            try {
-                const data = await getAllCategories();
-                setCategories(data);
-            } catch (error) {
-                console.error("Failed to fetch categories:", error);
-            }
-        };
-
-        fetchCategories();
-    }, []);
-
-    const handleClear = () => {
-        dispatch(setSearchQuery(""));
-        dispatch(setSelectedCategory("all"));
-    };
+        dispatch(getAllCategories());
+    }, [dispatch]);
 
     return (
         <section className="relative w-full h-screen bg-black text-white overflow-hidden">
@@ -77,8 +61,9 @@ const Hero = () => {
                         value={searchQuery}
                         onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                         onCategoryChange={(category) => dispatch(setSelectedCategory(category))}
-                        onClear={handleClearFilters}
+                        onClear={() => dispatch(clearFilters())}
                         categories={categories}
+                        isLoading={isLoading} // optional: can show loading in SearchBar
                     />
                 </div>
             </div>
