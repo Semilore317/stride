@@ -35,3 +35,7 @@ build/
 # ignore secrets
 /secrets/
 *.env
+
+# ignore database
+db/backup.sql
+*.sql
