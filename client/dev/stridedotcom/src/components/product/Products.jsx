@@ -23,7 +23,7 @@ const Products = () => {
     // Local UI states
     const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 8;
+    const itemsPerPage = 9;
 
     // Fetch categories + products
     useEffect(() => {
@@ -56,7 +56,16 @@ const Products = () => {
     const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  
+    const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+    // window.scrollTo({
+    //     top: 0,
+    //     //behavior: "smooth", // smooth scrolling
+    // });
+
+    window.scrollTo(0, 0); // instant jump to top2
+};
 
     // Handlers
     const handleClearFilters = () => {
