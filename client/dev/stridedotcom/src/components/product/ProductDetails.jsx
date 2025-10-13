@@ -1,9 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { api } from "../services/api";
+import { api } from "../services/api"; // Axios instance
 import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
-import { Button } from "../ui/button";
+import { FiShoppingCart, FiHeart } from "react-icons/fi";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -36,7 +36,9 @@ const ProductDetails = () => {
         const res = await api.get(`/products/products/${encoded}/products`);
         if (!cancelled) setProduct(res.data.data[0] || null);
       } catch (err) {
-        if (!cancelled) setError(err.response?.data?.message || err.message || "Failed to load product");
+        if (!cancelled) {
+          setError(err.response?.data?.message || err.message || "Failed to load product");
+        }
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -56,7 +58,6 @@ const ProductDetails = () => {
     setCurrentImageIndex((prev) => (prev - 1 + product.images.length) % product.images.length);
   };
 
-  // --- Touch handlers for swipe ---
   const handleTouchStart = (e) => {
     touchStartX.current = e.changedTouches[0].clientX;
   };
@@ -64,8 +65,8 @@ const ProductDetails = () => {
   const handleTouchEnd = (e) => {
     touchEndX.current = e.changedTouches[0].clientX;
     const deltaX = touchStartX.current - touchEndX.current;
-    if (deltaX > 50) nextImage(); // swipe left
-    else if (deltaX < -50) prevImage(); // swipe right
+    if (deltaX > 50) nextImage();
+    else if (deltaX < -50) prevImage();
   };
 
   if (loading) return <LoadSpinner />;
@@ -76,7 +77,9 @@ const ProductDetails = () => {
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <Link to="/">
-            <Button>Back to Products</Button>
+            <div className="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer">
+              Back to Products
+            </div>
           </Link>
         </div>
       </div>
@@ -88,7 +91,9 @@ const ProductDetails = () => {
         <div className="text-center">
           <p className="text-gray-700 dark:text-gray-300 mb-4">Product not found.</p>
           <Link to="/">
-            <Button>Back to Products</Button>
+            <div className="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer">
+              Back to Products
+            </div>
           </Link>
         </div>
       </div>
@@ -152,9 +157,22 @@ const ProductDetails = () => {
           <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
           <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{formatPrice(product.price)}</p>
           <p className="text-gray-700 dark:text-gray-300">{product.inventory} in stock</p>
-          <div className="flex gap-3">
-            <Button className="bg-purple-600 hover:bg-purple-700 text-white">Add to Cart</Button>
-            <Button variant="outline">Wishlist</Button>
+
+          {/* New Cart + Wishlist UI */}
+          <div className="flex items-center gap-4 mt-2">
+            {/* Add to Cart */}
+            <div className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
+              <FiShoppingCart size={20} />
+              <span>Add to Cart</span>
+            </div>
+
+            {/* Wishlist Heart Icon */}
+            <div className="relative group cursor-pointer text-gray-700 dark:text-gray-300">
+              <FiHeart size={24} />
+              <span className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                Add to Wishlist
+              </span>
+            </div>
           </div>
         </div>
       </div>
