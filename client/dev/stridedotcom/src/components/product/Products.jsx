@@ -11,6 +11,7 @@ import { getAllProducts } from "@/store/features/productSlice.js";
 import ProductImage from "@/components/utils/ProductImage";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
+import Sidebar from "@/components/sidebar/Sidebar";
 
 const Products = () => {
     const dispatch = useDispatch();
@@ -110,127 +111,13 @@ const Products = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto gap-6">
-                <aside className="lg:w-72 bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md lg:sticky lg:top-24 overflow-auto max-h-[80vh]">
-                    <h4 className="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400">
-                        Category
-                    </h4>
-                    <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                        <li
-                            className={`cursor-pointer ${
-                                selectedCategory === "all"
-                                    ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                    : "hover:text-purple-600 dark:hover:text-purple-400"
-                            }`}
-                            onClick={() => handleCategoryChange("all")}
-                        >
-                            All
-                        </li>
-                        {categories.map((cat) => (
-                            <li
-                                key={cat.id}
-                                className={`cursor-pointer ${
-                                    selectedCategory === cat.name.toLowerCase()
-                                        ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                        : "hover:text-purple-600 dark:hover:text-purple-400"
-                                }`}
-                                onClick={() =>
-                                    handleCategoryChange(cat.name.toLowerCase())
-                                }
-                            >
-                                {cat.name}
-                            </li>
-                        ))}
-                    </ul>
-
-                    <div className="mt-6">
-                        <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
-                            Brand
-                        </h4>
-                        <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                            <li
-                                className={`cursor-pointer ${
-                                    selectedBrand === "all"
-                                        ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                        : "hover:text-purple-600 dark:hover:text-purple-400"
-                                }`}
-                                onClick={() => handleBrandChange("all")}
-                            >
-                                All
-                            </li>
-                            {brands.map((brand) => (
-                                <li
-                                    key={brand}
-                                    className={`cursor-pointer ${
-                                        selectedBrand === brand
-                                            ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                            : "hover:text-purple-600 dark:hover:text-purple-400"
-                                    }`}
-                                    onClick={() => handleBrandChange(brand)}
-                                >
-                                    {brand.toUpperCase()}
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="mt-6">
-                        <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
-                            Price Range
-                        </h4>
-                        <div className="flex items-center space-x-2">
-                            <input
-                                type="number"
-                                name="min"
-                                value={priceRange.min}
-                                onChange={handlePriceChange}
-                                min="0"
-                                className="w-1/2 px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-transparent text-sm text-gray-800 dark:text-gray-200"
-                                placeholder="Min"
-                            />
-                            <span className="text-gray-600 dark:text-gray-400">-</span>
-                            <input
-                                type="number"
-                                name="max"
-                                value={priceRange.max}
-                                onChange={handlePriceChange}
-                                min="0"
-                                className="w-1/2 px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-transparent text-sm text-gray-800 dark:text-gray-200"
-                                placeholder="Max"
-                            />
-                        </div>
-                    </div>
-
-                    <div className="mt-6">
-                        <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
-                            Sort by Price
-                        </h4>
-                        <div className="flex flex-col space-y-2">
-                            <Button
-                                variant={sortOrder === "asc" ? "default" : "outline"}
-                                className="w-full text-sm"
-                                onClick={() => setSortOrder("asc")}
-                            >
-                                Low → High
-                            </Button>
-                            <Button
-                                variant={sortOrder === "desc" ? "default" : "outline"}
-                                className="w-full text-sm"
-                                onClick={() => setSortOrder("desc")}
-                            >
-                                High → Low
-                            </Button>
-                        </div>
-                    </div>
-
-                    <div className="mt-8">
-                        <Button
-                            onClick={handleClearFilters}
-                            className="w-full bg-purple-600 hover:bg-purple-700 text-white"
-                        >
-                            Clear All
-                        </Button>
-                    </div>
-                </aside>
+                <Sidebar
+                    brands={brands}
+                    priceRange={priceRange}
+                    setPriceRange={setPriceRange}
+                    sortOrder={sortOrder}
+                    setSortOrder={setSortOrder}
+                />
 
                 <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-10">
                     {loading ? (
