@@ -11,6 +11,7 @@ const searchSlice = createSlice({
     name: "search",
     initialState,
     reducers: {
+        // persist filters in url
         setSearchQuery(state, action) {
             state.searchQuery = action.payload;
         },
