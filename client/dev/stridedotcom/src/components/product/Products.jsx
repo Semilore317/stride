@@ -14,24 +14,23 @@ import { Button } from "@/components/ui/button";
 
 const Products = () => {
     const dispatch = useDispatch();
-
-    // Redux state
     const { categories } = useSelector((state) => state.category);
     const { searchQuery, selectedCategory } = useSelector((state) => state.search);
     const { products, loading, error } = useSelector((state) => state.product);
 
-    // Local UI states
     const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
+    const [selectedBrand, setSelectedBrand] = useState("all");
+    const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     const itemsPerPage = 9;
 
-    // Fetch categories + products
     useEffect(() => {
         dispatch(getAllCategories());
         dispatch(getAllProducts());
     }, [dispatch]);
 
-    // Filter + Sort
+    const brands = Array.from(new Set(products.map((p) => p.brand?.toLowerCase()))).filter(Boolean);
+
     const filteredProducts = (products || [])
         .filter((product) => {
             if (!product) return false;
@@ -43,7 +42,14 @@ const Products = () => {
                 product.category?.name
                     ?.toLowerCase()
                     .includes(selectedCategory.toLowerCase());
-            return matchesQuery && matchesCategory;
+            const matchesBrand =
+                selectedBrand === "all" ||
+                product.brand?.toLowerCase() === selectedBrand;
+            const price = parseFloat(product.price) || 0;
+            const min = parseFloat(priceRange.min) || 0;
+            const max = parseFloat(priceRange.max) || Infinity;
+            const matchesPrice = price >= min && price <= max;
+            return matchesQuery && matchesCategory && matchesBrand && matchesPrice;
         })
         .sort((a, b) =>
             sortOrder === "asc"
@@ -51,26 +57,21 @@ const Products = () => {
                 : (b.price || 0) - (a.price || 0)
         );
 
-    // Pagination logic (same as Home)
     const indexOfLastProduct = currentPage * itemsPerPage;
     const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
     const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
-  
+
     const paginate = (pageNumber) => {
-    setCurrentPage(pageNumber);
-    // window.scrollTo({
-    //     top: 0,
-    //     //behavior: "smooth", // smooth scrolling
-    // });
+        setCurrentPage(pageNumber);
+        window.scrollTo(0, 0);
+    };
 
-    window.scrollTo(0, 0); // instant jump to top2
-};
-
-    // Handlers
     const handleClearFilters = () => {
         dispatch(clearFilters());
         setSortOrder("asc");
+        setSelectedBrand("all");
+        setPriceRange({ min: "", max: "" });
         setCurrentPage(1);
     };
 
@@ -84,9 +85,20 @@ const Products = () => {
         setCurrentPage(1);
     };
 
+    const handleBrandChange = (value) => {
+        setSelectedBrand(value);
+        setCurrentPage(1);
+    };
+
+    const handlePriceChange = (e) => {
+        const { name, value } = e.target;
+        const numericValue = value === "" ? "" : Math.max(0, Number(value));
+        setPriceRange((prev) => ({ ...prev, [name]: numericValue }));
+        setCurrentPage(1);
+    };
+
     return (
         <section className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300 px-6 py-10 relative">
-            {/* Search Bar */}
             <div className="w-full max-w-4xl mx-auto mb-8 bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md">
                 <SearchBar
                     value={searchQuery}
@@ -98,7 +110,6 @@ const Products = () => {
             </div>
 
             <div className="flex flex-col lg:flex-row w-full max-w-6xl mx-auto gap-6">
-                {/* Sidebar */}
                 <aside className="lg:w-72 bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md lg:sticky lg:top-24 overflow-auto max-h-[80vh]">
                     <h4 className="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400">
                         Category
@@ -131,7 +142,64 @@ const Products = () => {
                         ))}
                     </ul>
 
-                    {/* Sort */}
+                    <div className="mt-6">
+                        <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
+                            Brand
+                        </h4>
+                        <ul className="space-y-2 text-gray-700 dark:text-gray-300">
+                            <li
+                                className={`cursor-pointer ${
+                                    selectedBrand === "all"
+                                        ? "text-purple-600 dark:text-purple-400 font-semibold"
+                                        : "hover:text-purple-600 dark:hover:text-purple-400"
+                                }`}
+                                onClick={() => handleBrandChange("all")}
+                            >
+                                All
+                            </li>
+                            {brands.map((brand) => (
+                                <li
+                                    key={brand}
+                                    className={`cursor-pointer ${
+                                        selectedBrand === brand
+                                            ? "text-purple-600 dark:text-purple-400 font-semibold"
+                                            : "hover:text-purple-600 dark:hover:text-purple-400"
+                                    }`}
+                                    onClick={() => handleBrandChange(brand)}
+                                >
+                                    {brand.toUpperCase()}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="mt-6">
+                        <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
+                            Price Range
+                        </h4>
+                        <div className="flex items-center space-x-2">
+                            <input
+                                type="number"
+                                name="min"
+                                value={priceRange.min}
+                                onChange={handlePriceChange}
+                                min="0"
+                                className="w-1/2 px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-transparent text-sm text-gray-800 dark:text-gray-200"
+                                placeholder="Min"
+                            />
+                            <span className="text-gray-600 dark:text-gray-400">-</span>
+                            <input
+                                type="number"
+                                name="max"
+                                value={priceRange.max}
+                                onChange={handlePriceChange}
+                                min="0"
+                                className="w-1/2 px-2 py-1 rounded border border-gray-300 dark:border-gray-700 bg-transparent text-sm text-gray-800 dark:text-gray-200"
+                                placeholder="Max"
+                            />
+                        </div>
+                    </div>
+
                     <div className="mt-6">
                         <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
                             Sort by Price
@@ -164,7 +232,6 @@ const Products = () => {
                     </div>
                 </aside>
 
-                {/* Products */}
                 <section className="flex-1 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-6 mb-10">
                     {loading ? (
                         <p className="col-span-full text-center text-gray-600 dark:text-gray-400 mt-20">
@@ -224,7 +291,6 @@ const Products = () => {
                 </section>
             </div>
 
-            {/* Pagination */}
             {totalPages > 0 && (
                 <div className="flex justify-center items-center space-x-2 mt-10">
                     <button
