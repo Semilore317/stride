@@ -4,7 +4,8 @@ import { api } from "../services/api"; // Axios instance
 import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
-
+//TODO: refine UI components with wishlist functionality as well as test the endpoints for that in Postman
+// might also add functionality for picking colors idk yet
 const ProductDetails = () => {
   const { name } = useParams();
   const [product, setProduct] = useState(null);
