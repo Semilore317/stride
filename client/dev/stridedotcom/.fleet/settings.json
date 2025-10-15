@@ -1,5 +1,19 @@
 {
     "autoSave": "AfterDelay",
     "editor.formatOnSave": true,
-    "prettier.mode": "Enabled"
+    "prettier.mode": "Enabled",
+    "plugins": [
+        {
+            "type": "add",
+            "pluginName": "fleet.tailwindcss"
+        },
+        {
+            "type": "add",
+            "pluginName": "fleet.react"
+        },
+        {
+            "type": "add",
+            "pluginName": "fleet.javascript.ai"
+        }
+    ]
 }
