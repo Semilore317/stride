@@ -4,14 +4,16 @@ import { api } from "../services/api"; // Axios instance
 import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
-//TODO: refine UI components with wishlist functionality as well as test the endpoints for that in Postman
-// might also add functionality for picking colors idk yet
+import { FaHeart } from "react-icons/fa"; // filled heart
+
 const ProductDetails = () => {
   const { name } = useParams();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isWishlisted, setIsWishlisted] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const sliderRef = useRef(null);
   const touchStartX = useRef(0);
@@ -38,7 +40,9 @@ const ProductDetails = () => {
         if (!cancelled) setProduct(res.data.data[0] || null);
       } catch (err) {
         if (!cancelled) {
-          setError(err.response?.data?.message || err.message || "Failed to load product");
+          setError(
+            err.response?.data?.message || err.message || "Failed to load product"
+          );
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -46,7 +50,9 @@ const ProductDetails = () => {
     };
 
     fetchProduct();
-    return () => { cancelled = true; };
+    return () => {
+      cancelled = true;
+    };
   }, [name]);
 
   const nextImage = () => {
@@ -70,6 +76,16 @@ const ProductDetails = () => {
     else if (deltaX < -50) prevImage();
   };
 
+  // --- Wishlist toggle handler ---
+  const handleWishlistToggle = () => {
+    setIsWishlisted((prev) => !prev);
+    // TODO: API call to add/remove from wishlist
+  };
+
+  // --- Quantity handlers ---
+  const incrementQty = () => setQuantity((prev) => prev + 1);
+  const decrementQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
+
   if (loading) return <LoadSpinner />;
 
   if (error)
@@ -90,7 +106,9 @@ const ProductDetails = () => {
     return (
       <div className="p-8 min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <p className="text-gray-700 dark:text-gray-300 mb-4">Product not found.</p>
+          <p className="text-gray-700 dark:text-gray-300 mb-4">
+            Product not found.
+          </p>
           <Link to="/">
             <div className="inline-block px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer">
               Back to Products
@@ -102,14 +120,18 @@ const ProductDetails = () => {
 
   return (
     <div className="p-8 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-      <Link to="/" className="inline-block mb-6 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded">
+      <Link
+        to="/"
+        className="inline-block mb-6 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
+      >
         ← Back to Products
       </Link>
 
-      <div className="flex flex-col md:flex-row gap-8 items-start">
+      {/* Centered content container */}
+      <div className="flex flex-col md:flex-row gap-8 items-start justify-center mx-auto max-w-5xl w-full">
         {/* Left: Swipeable Image Slider */}
         <div
-          className="flex-1 relative overflow-hidden h-[500px] rounded-lg"
+          className="flex-1 relative overflow-hidden h-[500px] rounded-lg max-w-[500px]"
           ref={sliderRef}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -118,19 +140,19 @@ const ProductDetails = () => {
             className="flex transition-transform duration-500"
             style={{ transform: `translateX(-${currentImageIndex * 100}%)` }}
           >
-            {product.images && product.images.length > 0
-              ? product.images.map((img) => (
-                  <ProductImage
-                    key={img.id}
-                    productId={img.id}
-                    className="w-full flex-shrink-0 object-cover rounded-lg"
-                  />
-                ))
-              : (
-                <div className="w-full h-[500px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
-                  <span className="text-gray-500 dark:text-gray-400">No image</span>
-                </div>
-              )}
+            {product.images && product.images.length > 0 ? (
+              product.images.map((img) => (
+                <ProductImage
+                  key={img.id}
+                  productId={img.id}
+                  className="w-full flex-shrink-0 object-cover rounded-lg"
+                />
+              ))
+            ) : (
+              <div className="w-full h-[500px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+                <span className="text-gray-500 dark:text-gray-400">No image</span>
+              </div>
+            )}
           </div>
 
           {/* Slider buttons */}
@@ -153,25 +175,56 @@ const ProductDetails = () => {
         </div>
 
         {/* Right: Details */}
-        <div className="flex-1 flex flex-col gap-4">
+        <div className="flex-1 flex flex-col gap-4 max-w-[450px]">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
           <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
-          <p className="text-xl font-bold text-purple-600 dark:text-purple-400">{formatPrice(product.price)}</p>
-          <p className="text-gray-700 dark:text-gray-300">{product.inventory} in stock</p>
+          <p className="text-xl font-bold text-purple-600 dark:text-purple-400">
+            {formatPrice(product.price)}
+          </p>
+          <p className="text-gray-700 dark:text-gray-300">
+            {product.inventory} in stock
+          </p>
 
-          {/* New Cart + Wishlist UI */}
-          <div className="flex items-center gap-4 mt-2">
+          {/* Cart + Wishlist */}
+          <div className="flex items-center gap-6 mt-4 flex-wrap">
+            {/* Quantity Updater */}
+            <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg">
+              <button
+                onClick={decrementQty}
+                className="px-3 py-1 text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+              >
+                −
+              </button>
+              <span className="px-4 text-lg font-medium">{quantity}</span>
+              <button
+                onClick={incrementQty}
+                className="px-3 py-1 text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-800 transition"
+              >
+                +
+              </button>
+            </div>
+
             {/* Add to Cart */}
             <div className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
               <FiShoppingCart size={20} />
-              <span>Add to Cart</span>
+              <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
             </div>
 
-            {/* Wishlist Heart Icon */}
-            <div className="relative group cursor-pointer text-gray-700 dark:text-gray-300">
-              <FiHeart size={24} />
+            {/* Wishlist Heart */}
+            <div onClick={handleWishlistToggle} className="relative group cursor-pointer">
+              {isWishlisted ? (
+                <FaHeart
+                  size={24}
+                  className="text-purple-500 transition-transform duration-300 transform scale-110"
+                />
+              ) : (
+                <FiHeart
+                  size={24}
+                  className="text-gray-700 dark:text-gray-300 hover:text-purple-400 transition-colors duration-300"
+                />
+              )}
               <span className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
-                Add to Wishlist
+                {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
               </span>
             </div>
           </div>

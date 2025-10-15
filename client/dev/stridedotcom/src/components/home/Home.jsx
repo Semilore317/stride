@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Hero from "../hero/Hero";
 import ProductImage from "../utils/ProductImage";
 import { useDispatch, useSelector } from "react-redux";
-import { Toast, ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import LoadSpinner from "../common/LoadSpinner";
 import NoProductAvailable from "../common/NoProductAvailable";
