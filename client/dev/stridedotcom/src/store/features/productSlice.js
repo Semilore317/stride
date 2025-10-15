@@ -1,9 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "@/components/services/api";
-import { getDistinctProductsByName } from "@/components/services/ProductService";
 import { toast } from "react-toastify";
 
-// fetch ALL products 
 export const getAllProducts = createAsyncThunk(
   "product/getAllProducts",
   async (_, { rejectWithValue }) => {
@@ -11,25 +9,64 @@ export const getAllProducts = createAsyncThunk(
       const response = await api.get("/products/all");
       return response.data.data;
     } catch (error) {
-      const message = error?.response?.data?.message || error.message || "Failed to fetch products";
-      toast.error(`Error fetching products: ${message}`);
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch products: ${message}`);
       return rejectWithValue(message);
     }
   }
 );
 
-// fetch DISTINCT products by name - home page
-export const fetchDistinctProducts = createAsyncThunk(
-  "product/fetchDistinctProducts",
+export const getAllBrands = createAsyncThunk(
+  "product/getAllBrands",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await getDistinctProductsByName();
-      const products = response.data || [];
-      if (!Array.isArray(products)) throw new Error("Fetched products is not an array");
-      return products;
+      const response = await api.get("/products/distinct/brands");
+      return response.data.data;
     } catch (error) {
-      const message = error?.message || "Unknown error occurred";
-      toast.error(`Error fetching products: ${message}`);
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch brands: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const getDistinctProductsByName = createAsyncThunk(
+  "product/getDistinctProductsByName",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/products/distinct/products");
+      const products = response.data.data || [];
+      const seenNames = new Set();
+      const uniqueByName = products.filter((p) => {
+        if (seenNames.has(p.name)) return false;
+        seenNames.add(p.name);
+        return true;
+      });
+      return uniqueByName;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch distinct products by name: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const getDistinctProductsById = createAsyncThunk(
+  "product/getDistinctProductsById",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/products/distinct/by-id");
+      const products = response.data.data || [];
+      const seenIds = new Set();
+      const uniqueById = products.filter((p) => {
+        if (seenIds.has(p.id)) return false;
+        seenIds.add(p.id);
+        return true;
+      });
+      return uniqueById;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch distinct products by ID: ${message}`);
       return rejectWithValue(message);
     }
   }
@@ -37,45 +74,60 @@ export const fetchDistinctProducts = createAsyncThunk(
 
 const initialState = {
   products: [],
-  distinctProducts: [],
+  distinctProductsByName: [],
+  distinctProductsById: [],
+  brands: [],
+  selectedBrands: [],
   errorMessage: null,
-  isLoading: false,
+  isLoading: true,
 };
 
 const productSlice = createSlice({
   name: "product",
   initialState,
-  reducers: {},
+  reducers: {
+    filterByBrands: (state, action) => {
+      const { brand, isChecked } = action.payload;
+      if (isChecked) {
+        state.selectedBrands.push(brand);
+      } else {
+        state.selectedBrands = state.selectedBrands.filter((b) => b !== brand);
+      }
+    },
+  },
   extraReducers: (builder) => {
     builder
-      // handle getAllProducts
-      .addCase(getAllProducts.pending, (state) => {
-        state.isLoading = true;
-        state.errorMessage = null;
-      })
       .addCase(getAllProducts.fulfilled, (state, action) => {
-        state.isLoading = false;
         state.products = action.payload;
+        state.isLoading = false;
+        state.errorMessage = null;
       })
       .addCase(getAllProducts.rejected, (state, action) => {
+        state.errorMessage = action.payload;
         state.isLoading = false;
-        state.errorMessage = action.payload || "Failed to load all products";
       })
-
-      // handle fetchDistinctProducts
-      .addCase(fetchDistinctProducts.pending, (state) => {
-        state.isLoading = true;
-        state.errorMessage = null;
-      })
-      .addCase(fetchDistinctProducts.fulfilled, (state, action) => {
+      .addCase(getAllBrands.fulfilled, (state, action) => {
+        state.brands = action.payload;
         state.isLoading = false;
-        state.distinctProducts = action.payload;
       })
-      .addCase(fetchDistinctProducts.rejected, (state, action) => {
+      .addCase(getDistinctProductsByName.fulfilled, (state, action) => {
+        state.distinctProductsByName = action.payload;
         state.isLoading = false;
-        state.errorMessage = action.payload || "Failed to load distinct products";
+      })
+      .addCase(getDistinctProductsByName.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getDistinctProductsById.fulfilled, (state, action) => {
+        state.distinctProductsById = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getDistinctProductsById.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
       });
   },
 });
 
+export const { filterByBrands } = productSlice.actions;
 export default productSlice.reducer;

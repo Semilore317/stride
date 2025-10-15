@@ -6,7 +6,8 @@ import { ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import LoadSpinner from "../common/LoadSpinner";
 import NoProductAvailable from "../common/NoProductAvailable";
-import {fetchDistinctProducts   } from "@/store/features/productSlice.js";
+//import {getDistinctProductsByName   } from "@/store/features/productSlice.js";
+import {getDistinctProductsByName} from "@/store/features/productSlice.js"
 
 const Home = () => {
   const dispatch = useDispatch();
@@ -23,7 +24,7 @@ const Home = () => {
   const itemsPerPage = 8;
 
   useEffect(() => {
-    dispatch(fetchDistinctProducts());
+    dispatch(getDistinctProductsByName());
   }, [dispatch]);
 
   const formatPrice = (price) => {
