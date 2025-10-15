@@ -10,7 +10,6 @@ import {
 import { getAllProducts } from "@/store/features/productSlice.js";
 import ProductImage from "@/components/utils/ProductImage";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import Sidebar from "@/components/sidebar/Sidebar";
 
 const Products = () => {
