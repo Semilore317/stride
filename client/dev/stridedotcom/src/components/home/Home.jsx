@@ -1,86 +1,69 @@
 import React, { useEffect, useState } from "react";
 import Hero from "../hero/Hero";
 import ProductImage from "../utils/ProductImage";
-import { useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
-import { getDistinctProductsByName } from "../services/ProductService";
+import { useDispatch, useSelector } from "react-redux";
+import { Toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import LoadSpinner from "../common/LoadSpinner";
 import NoProductAvailable from "../common/NoProductAvailable";
+import {fetchDistinctProducts   } from "@/store/features/productSlice.js";
 
 const Home = () => {
-    const [products, setProducts] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [loading, setLoading] = useState(true);
-    const [errorMessage, setErrorMessage] = useState(null);
+  const dispatch = useDispatch();
 
-    const itemsPerPage = 8;
-    const searchState = useSelector((state) => state.search || {});
-    const searchQuery = (searchState.searchQuery || "").toString();
-    const selectedCategory = (searchState.selectedCategory || "all").toString();
+  const { distinctProducts, isLoading, errorMessage } = useSelector(
+    (state) => state.product
+  );
 
-    const formatPrice = (price) => {
-        if (!price) return "₦0.00";
-        return new Intl.NumberFormat("en-NG", {
-            style: "currency",
-            currency: "NGN",
-            minimumFractionDigits: 2,
-        }).format(price);
-    };
+  const searchState = useSelector((state) => state.search || {});
+  const searchQuery = (searchState.searchQuery || "").toString();
+  const selectedCategory = (searchState.selectedCategory || "all").toString();
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                const response = await getDistinctProductsByName();
-                const productsData = response.data || [];
-                if (!Array.isArray(productsData)) {
-                    throw new Error("Fetched products is not an array");
-                }
-                setProducts(productsData);
-                setErrorMessage(null);
-            } catch (error) {
-                console.error("Full API Error:", error);
-                const message = error?.message || "Unknown error occurred";
-                setErrorMessage(message);
-                toast.error(`Error fetching products: ${message}`);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
-    // Filter products based on search and category
-    const filteredProducts = products.filter((product) => {
-        if (!product || !product.name) return false;
-        const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory =
-            selectedCategory === "all" ||
-            (product.category &&
-                typeof product.category === "object" &&
-                product.category.name &&
-                product.category.name.toLowerCase().includes(selectedCategory.toLowerCase()));
-        return matchesQuery && matchesCategory;
-    });
+  useEffect(() => {
+    dispatch(fetchDistinctProducts());
+  }, [dispatch]);
 
-    // Pagination
-    const indexOfLastProduct = currentPage * itemsPerPage;
-    const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
-    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
-    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const formatPrice = (price) => {
+    if (!price) return "₦0.00";
+    return new Intl.NumberFormat("en-NG", {
+      style: "currency",
+      currency: "NGN",
+      minimumFractionDigits: 2,
+    }).format(price);
+  };
 
-    const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  // filtering logic
+  const filteredProducts = distinctProducts.filter((product) => {
+    if (!product || !product.name) return false;
+    const matchesQuery = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" ||
+      (product.category &&
+        typeof product.category === "object" &&
+        product.category.name &&
+        product.category.name.toLowerCase().includes(selectedCategory.toLowerCase()));
+    return matchesQuery && matchesCategory;
+  });
 
-    if (loading) return <LoadSpinner />;
-    if (errorMessage) return <div className="text-red-500 p-4 text-center">{errorMessage}</div>;
-    if (products.length === 0) return <NoProductAvailable />;
+  // pagination
+  const indexOfLastProduct = currentPage * itemsPerPage;
+  const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+  const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-    return (
-        <>
-            <Hero />
-            <ToastContainer />
-            <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
+  if (isLoading) return <LoadSpinner />;
+  if (errorMessage) return <div className="text-red-500 p-4 text-center">{errorMessage}</div>;
+  if (distinctProducts.length === 0) return <NoProductAvailable />;
+
+  return (
+    <>
+      <Hero />
+      <ToastContainer />
+      <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
                     {currentProducts.map((product) => (
                         <div
@@ -89,7 +72,7 @@ const Home = () => {
                             onClick={() => window.location.href = `/products/${encodeURIComponent(product.name)}`}
                         >
                             <div className="w-full h-48 overflow-hidden">
-                                {product.images && product.images.length > 0 ? (
+                                {product.images?.length > 0 ? (
                                     <ProductImage
                                         productId={product.images[0].id}
                                         className="w-full h-48 object-cover"
@@ -114,15 +97,13 @@ const Home = () => {
                                 <Link
                                     to={`/products/${encodeURIComponent(product.name)}`}
                                     className="mt-4 w-full inline-block bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded transition text-center"
-                                    onClick={(e) => e.stopPropagation()} // prevent card click from firing
+                                    onClick={(e) => e.stopPropagation()}
                                 >
                                     View Product
                                 </Link>
                             </div>
                         </div>
                     ))}
-
-
                 </div>
 
                 {totalPages > 1 && (
@@ -139,10 +120,11 @@ const Home = () => {
                             <button
                                 key={page}
                                 onClick={() => paginate(page)}
-                                className={`px-4 py-2 text-sm rounded transition ${currentPage === page
-                                    ? "bg-purple-600 text-white font-bold"
-                                    : "bg-white border border-black/10 hover:bg-purple-100 dark:bg-black/60 dark:text-white dark:border-white/10 dark:hover:bg-purple-600"
-                                    }`}
+                                className={`px-4 py-2 text-sm rounded transition ${
+                                    currentPage === page
+                                        ? "bg-purple-600 text-white font-bold"
+                                        : "bg-white border border-black/10 hover:bg-purple-100 dark:bg-black/60 dark:text-white dark:border-white/10 dark:hover:bg-purple-600"
+                                }`}
                             >
                                 {page}
                             </button>
@@ -158,8 +140,8 @@ const Home = () => {
                     </div>
                 )}
             </div>
-        </>
-    );
+    </>
+  );
 };
 
 export default Home;
