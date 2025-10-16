@@ -124,4 +124,18 @@ public class ProductController {
         List<ProductDto> productDtos = productService.getConvertedProducts(products);
         return ResponseEntity.ok(new ApiResponse("success", productDtos));
     }
+
+    // extra endpoints lol
+//    @GetMapping("/distinct/brands")
+//    public ResponseEntity<ApiResponse> getDistinctBrands() {
+//        List<String> brands = productService.getDistinctBrands();
+//        return ResponseEntity.ok(new ApiResponse("success", brands));
+//    }
+//
+//    @GetMapping("/distinct/by-id")
+//    public ResponseEntity<ApiResponse> getDistinctProductsById() {
+//        List<Product> products = productService.findDistinctProductById();
+//        List<ProductDto> productDtos = productService.getConvertedProducts(products);
+//        return ResponseEntity.ok(new ApiResponse("success", productDtos));
+//    }
 }
