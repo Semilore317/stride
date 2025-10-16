@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button.jsx';
 import { Menu, Moon, Sun } from 'lucide-react';
 import ThemeToggleButton from "@/components/ui/ThemeToggleButton.jsx";
 
+//TODO: remove theme toggle from navbar and add it to a settings page
 
 const NavBar = () => {
     const [open, setOpen] = useState(false);
