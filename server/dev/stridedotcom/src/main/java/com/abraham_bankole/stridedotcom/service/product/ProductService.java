@@ -170,6 +170,9 @@ public class ProductService implements iProductService {
 
     @Override
     public List<Product> getProductsByCategory(String category) {
+        // testing...
+//        return Optional.ofNullable(productRepository.findByCategoryName(category))
+//                .orElse(new ArrayList<>());
         return productRepository.findByCategoryName(category);
     }
 
