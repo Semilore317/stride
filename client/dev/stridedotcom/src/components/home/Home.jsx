@@ -12,9 +12,11 @@ import {getDistinctProductsByName} from "@/store/features/productSlice.js"
 const Home = () => {
   const dispatch = useDispatch();
 
-  const { distinctProducts, isLoading, errorMessage } = useSelector(
-    (state) => state.product
-  );
+    const { distinctProductsByName, isLoading, errorMessage } = useSelector(
+        (state) => state.product
+      );
+      const distinctProducts = distinctProductsByName || [];
+      
 
   const searchState = useSelector((state) => state.search || {});
   const searchQuery = (searchState.searchQuery || "").toString();

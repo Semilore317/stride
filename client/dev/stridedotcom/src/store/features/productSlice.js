@@ -72,12 +72,41 @@ export const getDistinctProductsById = createAsyncThunk(
   }
 );
 
+export const getProductsByBrand = createAsyncThunk(
+  "product/getProductsByBrand",
+  async (brand, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/product/by-brand?brand=${encodeURIComponent(brand)}`);
+      return response.data.data;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch products by brand: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const getProductsByCategory = createAsyncThunk(
+  "product/getProductsByCategory",
+  async (category, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/product/${encodeURIComponent(category)}/all/products`);
+      return response.data.data;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch products by category: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
 const initialState = {
   products: [],
   distinctProductsByName: [],
   distinctProductsById: [],
   brands: [],
   selectedBrands: [],
+  similarProducts: [],
   errorMessage: null,
   isLoading: true,
 };
@@ -123,6 +152,24 @@ const productSlice = createSlice({
         state.isLoading = false;
       })
       .addCase(getDistinctProductsById.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getProductsByBrand.fulfilled, (state, action) => {
+        state.similarProducts = action.payload;
+        state.isLoading = false;
+        state.errorMessage = null;
+      })
+      .addCase(getProductsByBrand.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(getProductsByCategory.fulfilled, (state, action) => {
+        state.similarProducts = action.payload;
+        state.isLoading = false;
+        state.errorMessage = null;
+      })
+      .addCase(getProductsByCategory.rejected, (state, action) => {
         state.errorMessage = action.payload;
         state.isLoading = false;
       });

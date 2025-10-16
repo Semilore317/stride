@@ -5,6 +5,7 @@ import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa"; // filled heart
+import SimilarProducts from "./SimilarProducts";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -14,7 +15,6 @@ const ProductDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
-
   const sliderRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -131,7 +131,7 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row gap-8 items-start justify-center mx-auto max-w-5xl w-full">
         {/* Left: Swipeable Image Slider */}
         <div
-          className="flex-1 relative overflow-hidden h-[500px] rounded-lg max-w-[500px]"
+          className="flex-1 relative overflow-hidden h-[400px] rounded-lg max-w-[400px]"
           ref={sliderRef}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -149,7 +149,7 @@ const ProductDetails = () => {
                 />
               ))
             ) : (
-              <div className="w-full h-[500px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
+              <div className="w-full h-[400px] bg-gray-100 dark:bg-gray-800 flex items-center justify-center">
                 <span className="text-gray-500 dark:text-gray-400">No image</span>
               </div>
             )}
@@ -177,7 +177,9 @@ const ProductDetails = () => {
         {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-4 max-w-[450px]">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
-          <p className="text-gray-700 dark:text-gray-300">{product.description}</p>
+          <p className="text-gray-700 dark:text-gray-300 max-h-32 overflow-y-auto pr-2">
+            {product.description}
+          </p>
           <p className="text-xl font-bold text-purple-600 dark:text-purple-400">
             {formatPrice(product.price)}
           </p>
@@ -229,6 +231,11 @@ const ProductDetails = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Similar Products - Pass the product as currentProduct prop */}
+      <div className="mx-auto max-w-7xl w-full">
+        <SimilarProducts currentProduct={product} />
       </div>
     </div>
   );
