@@ -6,6 +6,7 @@ import LoadSpinner from "../common/LoadSpinner";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
 import { FaHeart } from "react-icons/fa"; // filled heart
 import SimilarProducts from "./SimilarProducts";
+import ImageOverlay from "../common/ImageOverlay";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -15,6 +16,7 @@ const ProductDetails = () => {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [isWishlisted, setIsWishlisted] = useState(false);
   const [quantity, setQuantity] = useState(1);
+  const [showOverlay, setShowOverlay] = useState(false);
   const sliderRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
@@ -131,10 +133,11 @@ const ProductDetails = () => {
       <div className="flex flex-col md:flex-row gap-8 items-start justify-center mx-auto max-w-5xl w-full">
         {/* Left: Swipeable Image Slider */}
         <div
-          className="flex-1 relative overflow-hidden h-[400px] rounded-lg max-w-[400px]"
+          className="flex-1 relative overflow-hidden h-[400px] rounded-lg max-w-[400px] cursor-pointer"
           ref={sliderRef}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          onClick={() => setShowOverlay(true)}
         >
           <div
             className="flex transition-transform duration-500"
@@ -237,6 +240,17 @@ const ProductDetails = () => {
       <div className="mx-auto max-w-7xl w-full">
         <SimilarProducts currentProduct={product} />
       </div>
+
+      {/* Image Overlay */}
+      {showOverlay && (
+        <ImageOverlay
+          images={product.images}
+          currentIndex={currentImageIndex}
+          onClose={() => setShowOverlay(false)}
+          onNext={nextImage}
+          onPrev={prevImage}
+        />
+      )}
     </div>
   );
 };
