@@ -107,6 +107,7 @@ const initialState = {
   brands: [],
   selectedBrands: [],
   similarProducts: [],
+  quantity: 1,
   errorMessage: null,
   isLoading: true,
 };
@@ -122,6 +123,14 @@ const productSlice = createSlice({
       } else {
         state.selectedBrands = state.selectedBrands.filter((b) => b !== brand);
       }
+    },
+    decreaseQuantity: (state) => {
+      if(state.quantity > 1){
+        state.quantity--;
+      }
+    },
+    increaseQuantity: (state) => {
+        state.quantity++;
     },
   },
   extraReducers: (builder) => {
@@ -176,5 +185,5 @@ const productSlice = createSlice({
   },
 });
 
-export const { filterByBrands } = productSlice.actions;
+export const { filterByBrands, decreaseQuantity, increaseQuantity } = productSlice.actions;
 export default productSlice.reducer;
