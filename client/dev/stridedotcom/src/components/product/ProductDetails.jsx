@@ -51,6 +51,9 @@ const ProductDetails = () => {
       }
     };
 
+    // scroll to top when component mounts or name changes
+    window.scrollTo(0, 0);
+
     fetchProduct();
     return () => {
       cancelled = true;
@@ -123,7 +126,7 @@ const ProductDetails = () => {
   return (
     <div className="p-8 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
       <Link
-        to="/"
+        to="/products"
         className="inline-block mb-6 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
       >
         ← Back to Products
