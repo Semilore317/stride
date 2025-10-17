@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
-import { api } from "../services/api"; // Axios instance
+import { api } from "../services/api";
 import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
 import { FiShoppingCart, FiHeart } from "react-icons/fi";
-import { FaHeart } from "react-icons/fa"; // filled heart
+import { FaHeart } from "react-icons/fa";
 import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
+import QuantityUpdater from "../utils/QuantityUpdater";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -32,7 +33,6 @@ const ProductDetails = () => {
 
   useEffect(() => {
     let cancelled = false;
-
     const fetchProduct = async () => {
       setLoading(true);
       setError("");
@@ -50,10 +50,7 @@ const ProductDetails = () => {
         if (!cancelled) setLoading(false);
       }
     };
-
-    // scroll to top when component mounts or name changes
     window.scrollTo(0, 0);
-
     fetchProduct();
     return () => {
       cancelled = true;
@@ -81,13 +78,10 @@ const ProductDetails = () => {
     else if (deltaX < -50) prevImage();
   };
 
-  // --- Wishlist toggle handler ---
   const handleWishlistToggle = () => {
     setIsWishlisted((prev) => !prev);
-    // TODO: API call to add/remove from wishlist
   };
 
-  // --- Quantity handlers ---
   const incrementQty = () => setQuantity((prev) => prev + 1);
   const decrementQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
@@ -131,10 +125,7 @@ const ProductDetails = () => {
       >
         ← Back to Products
       </Link>
-
-      {/* Centered content container */}
       <div className="flex flex-col md:flex-row gap-8 items-start justify-center mx-auto max-w-5xl w-full">
-        {/* Left: Swipeable Image Slider */}
         <div
           className="flex-1 relative overflow-hidden h-[400px] rounded-lg max-w-[400px] cursor-pointer"
           ref={sliderRef}
@@ -160,8 +151,6 @@ const ProductDetails = () => {
               </div>
             )}
           </div>
-
-          {/* Slider buttons */}
           {product.images && product.images.length > 1 && (
             <>
               <button
@@ -179,8 +168,6 @@ const ProductDetails = () => {
             </>
           )}
         </div>
-
-        {/* Right: Details */}
         <div className="flex-1 flex flex-col gap-4 max-w-[450px]">
           <h1 className="text-3xl font-semibold">{product.name}</h1>
           <p className="text-gray-700 dark:text-gray-300 max-h-32 overflow-y-auto pr-2">
@@ -192,33 +179,16 @@ const ProductDetails = () => {
           <p className="text-gray-700 dark:text-gray-300">
             {product.inventory} in stock
           </p>
-
-          {/* Cart + Wishlist */}
           <div className="flex items-center gap-6 mt-4 flex-wrap">
-            {/* Quantity Updater */}
-            <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg">
-              <button
-                onClick={decrementQty}
-                className="px-3 py-1 text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-800 transition"
-              >
-                −
-              </button>
-              <span className="px-4 text-lg font-medium">{quantity}</span>
-              <button
-                onClick={incrementQty}
-                className="px-3 py-1 text-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-800 transition"
-              >
-                +
-              </button>
-            </div>
-
-            {/* Add to Cart */}
+            <QuantityUpdater
+              quantity={quantity}
+              incrementQty={incrementQty}
+              decrementQty={decrementQty}
+            />
             <div className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
               <FiShoppingCart size={20} />
               <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
             </div>
-
-            {/* Wishlist Heart */}
             <div onClick={handleWishlistToggle} className="relative group cursor-pointer">
               {isWishlisted ? (
                 <FaHeart
@@ -238,13 +208,9 @@ const ProductDetails = () => {
           </div>
         </div>
       </div>
-
-      {/* Similar Products - Pass the product as currentProduct prop */}
       <div className="mx-auto max-w-7xl w-full">
         <SimilarProducts currentProduct={product} />
       </div>
-
-      {/* Image Overlay */}
       {showOverlay && (
         <ImageOverlay
           images={product.images}
