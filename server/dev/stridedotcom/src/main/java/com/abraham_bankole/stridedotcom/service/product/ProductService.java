@@ -142,6 +142,11 @@ public class ProductService implements iProductService {
         return savedProducts;
     }
 
+    @Override
+    public List<Product> getProductsByCategoryId(Long categoryId) {
+        return productRepository.findAllByCategoryId(categoryId);
+    }
+
 
     @Override
     public List<Product> getProductsByName(String name) {
@@ -191,7 +196,7 @@ public class ProductService implements iProductService {
         return productRepository.findByNameAndBrand(brand, name);
     }
 
-    //custom mwthod to convert a list of products to a product DTO
+    //custom method to convert a list of products to a product DTO
     @Override
     public List<ProductDto> getConvertedProducts(List<Product> products) {
         return products.stream().

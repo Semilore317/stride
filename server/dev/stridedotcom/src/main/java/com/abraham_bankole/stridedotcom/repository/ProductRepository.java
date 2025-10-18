@@ -13,9 +13,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByNameAndBrand(String brand, String name);
     List<Product> findByNameContainingIgnoreCase(String name);
 
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))") //reduces the need to type the full name of the product
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))") //removes the need to type the full name of the product
     List<Product> findByName(String name);
     List<Product> findByBrand(String brand);
 
     boolean existsByNameAndBrand(String name, String brand);
+
+    List<Product> findAllByCategoryId(Long categoryId);
 }

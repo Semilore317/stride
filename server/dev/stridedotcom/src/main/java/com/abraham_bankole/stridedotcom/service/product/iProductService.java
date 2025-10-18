@@ -34,4 +34,6 @@ public interface iProductService {
     ProductDto convertToDto(Product product);
 
     List<Product> addBulkProducts(List<AddProductRequest> products);
+
+    List<Product> getProductsByCategoryId(Long categoryId);
 }
