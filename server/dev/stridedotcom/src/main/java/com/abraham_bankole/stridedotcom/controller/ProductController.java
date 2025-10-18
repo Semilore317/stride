@@ -118,6 +118,14 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
     }
 
+    @GetMapping("/category/{categoryId}/all/products")
+    public ResponseEntity<ApiResponse> findProductsByCategoryId(@PathVariable Long categoryId) {
+        List<Product> products = productService.getProductsByCategoryId(categoryId);
+        List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
+        return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
+    }
+
+
     @GetMapping("/distinct/products")
     public ResponseEntity<ApiResponse> getDistinctProductsByName() {
         List<Product> products = productService.findDistinctProductByName();
