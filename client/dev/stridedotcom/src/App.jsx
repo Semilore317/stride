@@ -12,6 +12,7 @@ function App() {
         <Route index element={<Home />} />
         <Route path="/products" element={<Products />} />
         <Route path='/products/:name' element={<ProductDetails />} />
+        <Route path='/products/category/:categoryId/products/' element={<Products />} />
         {/* optional catch-all */}
         <Route path="*" element={
           <div>
