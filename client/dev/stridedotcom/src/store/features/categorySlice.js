@@ -5,7 +5,7 @@ export const getAllCategories = createAsyncThunk(
     "category/getAllCategories",
     async () => {
         const response = await api.get("/categories/all");
-        return response.data.data; // array of categories
+        return response.data.data; // category array
     }
 );
 
