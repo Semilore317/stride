@@ -1,18 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useDispatch, useSelector } from "react-redux";
 import {
     setSelectedCategory,
     clearFilters,
-    setSearchQuery,
+    setSelectedBrands,
 } from "@/store/features/searchSlice";
 import { useSearchParams } from "react-router-dom";
 
 const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder }) => {
     const dispatch = useDispatch();
     const { categories } = useSelector((state) => state.category);
-    const { selectedCategory } = useSelector((state) => state.search);
-    const [selectedBrand, setSelectedBrand] = useState("all");
+    const { selectedCategory, selectedBrands } = useSelector((state) => state.search);
     const [searchParams, setSearchParams] = useSearchParams();
 
     const handleCategoryChange = (value) => {
@@ -23,11 +22,21 @@ const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder })
         setSearchParams(params);
     };
 
-    const handleBrandChange = (brand) => {
-        setSelectedBrand(brand);
+    const handleBrandToggle = (brand) => {
+        let updatedBrands;
+        if (selectedBrands.includes(brand)) {
+            updatedBrands = selectedBrands.filter((b) => b !== brand);
+        } else {
+            updatedBrands = [...selectedBrands, brand];
+        }
+        dispatch(setSelectedBrands(updatedBrands));
+        
         const params = new URLSearchParams(searchParams);
-        if (brand && brand !== "all") params.set("brand", brand);
-        else params.delete("brand");
+        if (updatedBrands.length > 0) {
+            params.set("brands", updatedBrands.join(","));
+        } else {
+            params.delete("brands");
+        }
         setSearchParams(params);
     };
 
@@ -47,7 +56,6 @@ const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder })
 
     const handleClearFilters = () => {
         dispatch(clearFilters());
-        setSelectedBrand("all");
         setPriceRange({ min: "", max: "" });
         setSortOrder("asc");
         setSearchParams({});
@@ -56,13 +64,14 @@ const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder })
     useEffect(() => {
         // Apply filters from URL when page loads
         const category = searchParams.get("category") || "all";
-        const brand = searchParams.get("brand") || "all";
+        const brandsParam = searchParams.get("brands");
+        const brandsArray = brandsParam ? brandsParam.split(",") : [];
         const min = searchParams.get("min") || "";
         const max = searchParams.get("max") || "";
         const order = searchParams.get("sort") || "asc";
 
         dispatch(setSelectedCategory(category));
-        setSelectedBrand(brand);
+        dispatch(setSelectedBrands(brandsArray));
         setPriceRange({ min, max });
         setSortOrder(order);
     }, [dispatch, searchParams]);
@@ -71,7 +80,7 @@ const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder })
         <aside className="lg:w-72 bg-white/10 dark:bg-white/10 backdrop-blur-md p-4 rounded-lg shadow-md lg:sticky lg:top-24 overflow-auto max-h-[80vh]">
             {/* Category */}
             <h4 className="text-lg font-semibold mb-4 text-purple-600 dark:text-purple-400">
-                Category
+                CATEGORY
             </h4>
             <ul className="space-y-2 text-gray-700 dark:text-gray-300">
                 <li
@@ -102,30 +111,24 @@ const Sidebar = ({ brands, priceRange, setPriceRange, sortOrder, setSortOrder })
             {/* Brand */}
             <div className="mt-6">
                 <h4 className="text-lg font-semibold mb-3 text-purple-600 dark:text-purple-400">
-                    Brand
+                    BRAND
                 </h4>
                 <ul className="space-y-2 text-gray-700 dark:text-gray-300">
-                    <li
-                        className={`cursor-pointer ${
-                            selectedBrand === "all"
-                                ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                : "hover:text-purple-600 dark:hover:text-purple-400"
-                        }`}
-                        onClick={() => handleBrandChange("all")}
-                    >
-                        All
-                    </li>
                     {brands.map((brand) => (
                         <li
                             key={brand}
-                            className={`cursor-pointer ${
-                                selectedBrand === brand
-                                    ? "text-purple-600 dark:text-purple-400 font-semibold"
-                                    : "hover:text-purple-600 dark:hover:text-purple-400"
-                            }`}
-                            onClick={() => handleBrandChange(brand)}
+                            className="flex items-center space-x-2 cursor-pointer hover:text-purple-600 dark:hover:text-purple-400"
+                            onClick={() => handleBrandToggle(brand)}
                         >
-                            {brand.toUpperCase()}
+                            <input
+                                type="checkbox"
+                                checked={selectedBrands.includes(brand)}
+                                onChange={() => handleBrandToggle(brand)}
+                                className="w-4 h-4 accent-purple-600 cursor-pointer"
+                            />
+                            <span className={selectedBrands.includes(brand) ? "font-semibold" : ""}>
+                                {brand.toUpperCase()}
+                            </span>
                         </li>
                     ))}
                 </ul>
