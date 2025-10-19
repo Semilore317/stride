@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { api } from "../services/api";
 import ProductImage from "../utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
@@ -12,6 +13,7 @@ import { addToCart } from "@/store/features/cartSlice";
 
 const ProductDetails = () => {
   const { name } = useParams();
+  const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -23,8 +25,24 @@ const ProductDetails = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  const handleAddToCart = () => {
-    dispatch(addToCart({ productId, quantity }));
+  const handleAddToCart = async () => {
+    if (!product?.id) {
+      console.error("Product ID is missing");
+      return;
+    }
+    
+    try {
+      const result = await dispatch(addToCart({ 
+        productId: product.id, 
+        quantity 
+      })).unwrap();
+      
+      console.log("Add to cart success:", result);
+      // Optionally show a success toast here
+    } catch (err) {
+      console.error("Add to cart failed:", err);
+      // Optionally show an error toast here
+    }
   };
 
   const formatPrice = (price) => {
@@ -210,7 +228,10 @@ const ProductDetails = () => {
                 </span>
               </div>
             </div>
-            <div className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition w-full">
+            <div 
+              onClick={handleAddToCart}
+              className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition w-full"
+            >
               <FiShoppingCart size={20} />
               <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
             </div>
@@ -224,8 +245,9 @@ const ProductDetails = () => {
               decrementQty={decrementQty}
             />
             <div 
-            onClick={() => handleAddToCart}
-            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
+              onClick={handleAddToCart}
+              className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition"
+            >
               <FiShoppingCart size={20} />
               <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
             </div>
