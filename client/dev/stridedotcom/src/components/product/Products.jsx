@@ -15,12 +15,11 @@ import Sidebar from "@/components/sidebar/Sidebar";
 const Products = () => {
     const dispatch = useDispatch();
     const { categories } = useSelector((state) => state.category);
-    const { searchQuery, selectedCategory } = useSelector((state) => state.search);
+    const { searchQuery, selectedCategory, selectedBrands } = useSelector((state) => state.search);
     const { products, loading, error } = useSelector((state) => state.product);
 
     const [sortOrder, setSortOrder] = useState("asc");
     const [currentPage, setCurrentPage] = useState(1);
-    const [selectedBrand, setSelectedBrand] = useState("all");
     const [priceRange, setPriceRange] = useState({ min: "", max: "" });
     const itemsPerPage = 9;
 
@@ -43,8 +42,8 @@ const Products = () => {
                     ?.toLowerCase()
                     .includes(selectedCategory.toLowerCase());
             const matchesBrand =
-                selectedBrand === "all" ||
-                product.brand?.toLowerCase() === selectedBrand;
+                selectedBrands.length === 0 ||
+                selectedBrands.includes(product.brand?.toLowerCase());
             const price = parseFloat(product.price) || 0;
             const min = parseFloat(priceRange.min) || 0;
             const max = parseFloat(priceRange.max) || Infinity;
@@ -70,7 +69,6 @@ const Products = () => {
     const handleClearFilters = () => {
         dispatch(clearFilters());
         setSortOrder("asc");
-        setSelectedBrand("all");
         setPriceRange({ min: "", max: "" });
         setCurrentPage(1);
     };
@@ -82,18 +80,6 @@ const Products = () => {
 
     const handleCategoryChange = (value) => {
         dispatch(setSelectedCategory(value));
-        setCurrentPage(1);
-    };
-
-    const handleBrandChange = (value) => {
-        setSelectedBrand(value);
-        setCurrentPage(1);
-    };
-
-    const handlePriceChange = (e) => {
-        const { name, value } = e.target;
-        const numericValue = value === "" ? "" : Math.max(0, Number(value));
-        setPriceRange((prev) => ({ ...prev, [name]: numericValue }));
         setCurrentPage(1);
     };
 

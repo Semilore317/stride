@@ -3,32 +3,26 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     searchQuery: "",
     selectedCategory: "all",
-    priceRange: [0, 0],
-    rating: 0,
+    selectedBrands: [],
 };
 
 const searchSlice = createSlice({
     name: "search",
     initialState,
     reducers: {
-        // persist filters in url
-        setSearchQuery(state, action) {
+        setSearchQuery: (state, action) => {
             state.searchQuery = action.payload;
         },
-        setSelectedCategory(state, action) {
+        setSelectedCategory: (state, action) => {
             state.selectedCategory = action.payload;
         },
-        setPriceRange(state, action) {
-            state.priceRange = action.payload;
+        setSelectedBrands: (state, action) => {
+            state.selectedBrands = action.payload;
         },
-        setRating(state, action) {
-            state.rating = action.payload;
-        },
-        clearFilters(state) {
+        clearFilters: (state) => {
             state.searchQuery = "";
             state.selectedCategory = "all";
-            state.priceRange = [0, 0];
-            state.rating = 0;
+            state.selectedBrands = [];
         },
     },
 });
@@ -36,8 +30,7 @@ const searchSlice = createSlice({
 export const {
     setSearchQuery,
     setSelectedCategory,
-    setPriceRange,
-    setRating,
+    setSelectedBrands,
     clearFilters,
 } = searchSlice.actions;
 
