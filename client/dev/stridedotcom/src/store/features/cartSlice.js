@@ -1,15 +1,40 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {api} from "../..component/services/api";
+import { api } from "@/components/services/api";
 
 // export const fetchCart = createAsyncThunk("cart/fetchCart", async () => {
 //     const response = await api.get("/cart");
 //     return response.data;
 // });
 
-export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
-    const response = await api.post("/cartItems/item/add", { productId, quantity });
-    return response.data.data;
-});
+// export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
+//     const response = await api.post("/cartItems/item/add", { productId, quantity });
+//     console.log("Cart Slice response", response.data);
+//     console.log("Cart Slice response", response.data.data);
+//     return response.data.data;
+// });
+
+// export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
+//     const formData = new FormData();
+//     formData.append("productId", productId);
+//     formData.append("quantity", quantity);
+    
+//     const response = await api.post("/cartItems/item/add", formData);
+//     console.log("Cart Slice response", response.data);
+//     console.log("Cart Slice response", response.data.data);
+//     return response.data.data;
+// });
+
+export const addToCart = createAsyncThunk(
+  "cart/addToCart", 
+  async ({ productId, quantity }) => {
+    const response = await api.post('/cartItems/item/add', null, {
+      params: { productId, quantity }
+    });
+    console.log("Cart Slice response", response.data);
+    return response.data;
+  }
+);
+
 
 const initialState = {
     items: [],
@@ -26,20 +51,23 @@ const cartSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCart.fulfilled, (state, action) => {
-                state.items = action.payload.items;
-                state.totalAmount = action.payload.totalAmount;
-                state.totalPrice = action.payload.totalPrice;
-            })
+            // .addCase(fetchCart.fulfilled, (state, action) => {
+            //     state.items = action.payload.items;
+            //     state.totalAmount = action.payload.totalAmount;
+            //     state.totalPrice = action.payload.totalPrice;
+            // })
             .addCase(addToCart.fulfilled, (state, action) => {
                 // state.items.push(action.payload);
                 // state.totalAmount += action.payload.quantity;
                 // state.totalPrice += action.payload.price * action.payload.quantity;
                 state.successMessage = "Item added to cart Successfully!";
+            })
+            .addCase(addToCart.rejected, (state, action) => {
+                state.errorMessage = action.error.message;
             });
     },
 });
 
-export const { addItem, removeItem, clearCart } = cartSlice.actions;
+// export const { addItem, removeItem, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

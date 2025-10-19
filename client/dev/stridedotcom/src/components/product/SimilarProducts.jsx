@@ -78,7 +78,7 @@ const SimilarProducts = ({ currentProduct }) => {
   const ProductCard = ({ product }) => (
     <Link
       to={`/products/${encodeURIComponent(product.name)}`}
-      className="group block bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition flex flex-col h-full"
+      className="group bg-white border border-black/10 dark:bg-white/5 dark:border-white/10 rounded-lg overflow-hidden shadow-md hover:shadow-xl transition flex flex-col h-full"
     >
       <div className="w-full h-48 overflow-hidden">
         {product.images && product.images.length > 0 ? (
