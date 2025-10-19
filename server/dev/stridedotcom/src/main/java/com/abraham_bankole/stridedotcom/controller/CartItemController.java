@@ -24,9 +24,10 @@ public class CartItemController {
                                                    @RequestParam int quantity) {
         // i'd normally get the userId from the authentication
         // but no login logic yet so, id have to get it manually
-        User user = userService.getAuthenticatedUser();
-        Cart cart = cartService.initializeNewCartForUser(user);
-        cartItemService.addItemToCart(cart.getId(), productId, quantity);
+//        User user = userService.getAuthenticatedUser();
+//        Cart cart = cartService.initializeNewCartForUser(user);
+
+        cartItemService.addItemToCart(1L, productId, quantity);
 
         return ResponseEntity.ok(new ApiResponse("Item added successfully!", null));
     }

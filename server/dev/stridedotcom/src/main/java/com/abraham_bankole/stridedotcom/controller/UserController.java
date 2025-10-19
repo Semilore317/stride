@@ -27,6 +27,17 @@ public class UserController {
 //        return ResponseEntity.ok(new ApiResponse("success", users));
 //    }
 
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> userDtos = users.stream()
+                .map(userService::convertUserToDto)
+                .toList();
+
+        return ResponseEntity.ok(new ApiResponse("success", userDtos));
+    }
+
+
     // todo:
     // create a solution to return a user with the specified information
     // return along with the user
