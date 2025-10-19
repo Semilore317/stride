@@ -7,34 +7,10 @@ import ThemeToggleButton from "@/components/ui/ThemeToggleButton.jsx";
 
 //TODO: remove theme toggle from navbar and add it to a settings page
 
-const NavBar = () => {
+const NavBar = ({ isDark, toggleTheme }) => {
     const [open, setOpen] = useState(false);
-    const [isDark, setIsDark] = useState(false);
 
     const handleLinkClick = () => setOpen(false);
-
-    // Load saved theme or system preference
-    useEffect(() => {
-        const stored = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const darkMode = stored === 'dark' || (!stored && prefersDark);
-
-        if (darkMode) {
-            document.documentElement.classList.add('dark');
-            setIsDark(true);
-        } else {
-            document.documentElement.classList.remove('dark');
-            setIsDark(false);
-        }
-    }, []);
-
-    const toggleTheme = () => {
-        const html = document.documentElement;
-        const newMode = !isDark;
-        html.classList.toggle('dark', newMode);
-        localStorage.setItem('theme', newMode ? 'dark' : 'light');
-        setIsDark(newMode);
-    };
 
     return (
         <nav className="sticky top-0 z-50 w-full backdrop-blur-md transition-colors duration-300
@@ -70,15 +46,6 @@ const NavBar = () => {
                     {/* Mobile Menu */}
                     <div className="md:hidden flex items-center gap-2">
                         {/* Theme Toggle (Mobile) */}
-                        {/* <button
-                            onClick={toggleTheme}
-                            className="transition-transform duration-500 hover:rotate-180"
-                            aria-label="Toggle Theme"
-                        >
-                            {isDark
-                                ? <Sun className="text-yellow-400 w-6 h-6" />
-                                : <Moon className="text-blue-500 w-6 h-6" />}
-                        </button> */}
                         <ThemeToggleButton isDark={isDark} toggleTheme={toggleTheme} />
                         <Sheet open={open} onOpenChange={setOpen}>
                             <SheetTrigger asChild>
