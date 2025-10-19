@@ -8,6 +8,7 @@ import { FaHeart } from "react-icons/fa";
 import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
 import QuantityUpdater from "../utils/QuantityUpdater";
+import { addToCart } from "@/store/features/cartSlice";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -21,6 +22,10 @@ const ProductDetails = () => {
   const sliderRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+
+  const handleAddToCart = () => {
+    dispatch(addToCart({ productId, quantity }));
+  };
 
   const formatPrice = (price) => {
     if (price === null || price === undefined) return "₦0.00";
@@ -218,7 +223,9 @@ const ProductDetails = () => {
               incrementQty={incrementQty}
               decrementQty={decrementQty}
             />
-            <div className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
+            <div 
+            onClick={() => handleAddToCart}
+            className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition">
               <FiShoppingCart size={20} />
               <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
             </div>
