@@ -6,7 +6,7 @@ import { setSelectedCategory } from "@/store/features/searchSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
-const Footer = () => {
+const Footer = ({ isDark }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
@@ -25,12 +25,16 @@ const Footer = () => {
     };
 
     return (
-      <footer className="bg-black text-white py-10 rounded-tl-2xl rounded-tr-2xl">
+      <footer 
+        className={`${
+          isDark ? 'bg-purple-950' : 'bg-black'
+        } text-white py-10 rounded-tl-2xl rounded-tr-2xl transition-colors duration-500`}
+      >
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
             <h3 className="text-xl font-semibold mb-4">About Us</h3>
             <p className="text-sm text-gray-400">
-              We curate timeless pieces and modern essentials from the world’s most trusted brands, combining craftsmanship, innovation, and style in every product we offer. Whether you’re after elegance or performance, we make it effortless to find what truly fits your stride.
+              We curate timeless pieces and modern essentials from the world's most trusted brands, combining craftsmanship, innovation, and style in every product we offer. Whether you're after elegance or performance, we make it effortless to find what truly fits your stride.
             </p>
           </div>
 
