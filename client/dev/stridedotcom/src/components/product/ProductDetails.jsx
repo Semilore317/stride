@@ -179,7 +179,40 @@ const ProductDetails = () => {
           <p className="text-gray-700 dark:text-gray-300">
             {product.inventory} in stock
           </p>
-          <div className="flex items-center gap-6 mt-4 flex-wrap">
+          
+          {/* Mobile Layout */}
+          <div className="flex flex-col gap-4 mt-4 md:hidden">
+            <div className="flex items-center justify-between gap-4">
+              <QuantityUpdater
+                quantity={quantity}
+                incrementQty={incrementQty}
+                decrementQty={decrementQty}
+              />
+              <div onClick={handleWishlistToggle} className="relative group cursor-pointer flex-shrink-0">
+                {isWishlisted ? (
+                  <FaHeart
+                    size={24}
+                    className="text-purple-500 transition-transform duration-300 transform scale-110"
+                  />
+                ) : (
+                  <FiHeart
+                    size={24}
+                    className="text-gray-700 dark:text-gray-300 hover:text-purple-400 transition-colors duration-300"
+                  />
+                )}
+                <span className="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-1 bg-black/80 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                  {isWishlisted ? "Remove from Wishlist" : "Add to Wishlist"}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition w-full">
+              <FiShoppingCart size={20} />
+              <span>{`Add ${quantity > 1 ? quantity : ""} to Cart`}</span>
+            </div>
+          </div>
+
+          {/* Desktop Layout */}
+          <div className="hidden md:flex items-center gap-6 mt-4">
             <QuantityUpdater
               quantity={quantity}
               incrementQty={incrementQty}

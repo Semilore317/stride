@@ -30,7 +30,7 @@ const Footer = () => {
           <div>
             <h3 className="text-xl font-semibold mb-4">About Us</h3>
             <p className="text-sm text-gray-400">
-              Prolific.
+              We curate timeless pieces and modern essentials from the world’s most trusted brands, combining craftsmanship, innovation, and style in every product we offer. Whether you’re after elegance or performance, we make it effortless to find what truly fits your stride.
             </p>
           </div>
 
