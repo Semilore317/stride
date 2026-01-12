@@ -37,12 +37,12 @@ public class JwtUtils{
             String filePath = jwtSecret.substring(6); // remove "@file:"
             try {
                 jwtSecret = Files.readString(Path.of(filePath)).trim();
-                System.out.println("✅ JWT Secret loaded from file: " + filePath);
+                System.out.println("JWT Secret loaded from file: " + filePath);
             } catch (IOException e) {
                 throw new RuntimeException("Could not read JWT secret from file: " + filePath, e);
             }
         } else {
-            System.out.println("✅ JWT Secret loaded directly from properties");
+            System.out.println("JWT Secret loaded directly from properties");
         }
 
         // Optional sanity check: ensure it's base64-decodable and long enough
