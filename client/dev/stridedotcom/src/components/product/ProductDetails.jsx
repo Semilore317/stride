@@ -12,6 +12,7 @@ import QuantityUpdater from "../utils/QuantityUpdater";
 import { addToCart } from "@/store/features/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
+import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetails = () => {
   const { name } = useParams();
