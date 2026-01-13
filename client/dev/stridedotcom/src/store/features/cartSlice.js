@@ -69,10 +69,25 @@ const cartSlice = createSlice({
             })
             .addCase(addToCart.rejected, (state, action) => {
                 state.errorMessage = action.error.message;
+            })
+            .addCase(getUserCart.fulfilled, (state, action) => {
+                state.items = action.payload.items;
+                state.totalAmount = action.payload.totalAmount;
+                state.totalPrice = action.payload.totalPrice;
             });
+            
     },
 });
 
 // export const { addItem, removeItem, clearCart } = cartSlice.actions;
+
+
+export const getUserCart = createAsyncThunk(
+  "cart/getUserCart",
+  async (userId) => {
+    const response = await api.get(`/carts/user/${userId}/cart`);
+    return response.data;
+  }
+);
 
 export default cartSlice.reducer;
