@@ -34,7 +34,6 @@ export const addToCart = createAsyncThunk(
 
     const response = await api.post('/cartItems/item/add', formData);
     console.log("Cart Slice response 1: ", response.data);
-    console.log("Cart Slice response 2: ", response.data.data);
     return response.data;
   }
 );

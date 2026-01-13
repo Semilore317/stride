@@ -27,7 +27,8 @@ public class CartItemController {
 //        User user = userService.getAuthenticatedUser();
 //        Cart cart = cartService.initializeNewCartForUser(user);
 
-        cartItemService.addItemToCart(1L, productId, quantity);
+        Cart cart = cartService.initializeGuestCart();
+        cartItemService.addItemToCart(cart.getId(), productId, quantity);
 
         return ResponseEntity.ok(new ApiResponse("Item added successfully!", null));
     }

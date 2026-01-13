@@ -33,12 +33,8 @@ public class ShopConfig {
     private final ShopUserDetailsService shopUserDetailsService;
     private final JwtEntryPoint authEntryPoint;
 
-    @Value("/api/v1")
-    private static String API;
-
-    // urls that must be accessed ONLY after auth
-    private static final List<String> SECURED_URLS
-            = List.of(API+"/carts/**", API+"/cartItems/**", API+"/orders/**");
+    @Value("${api.prefix}")
+    private String API;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -72,7 +68,7 @@ public class ShopConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5174"));  // Your Vite frontend (use patterns for dev flexibility)
+        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:5174"));  // Your Vite frontend (use patterns for dev flexibility)
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));  // Allow all headers (e.g., Authorization for JWT)
         configuration.setAllowCredentials(true);  // Enable for JWT cookies if needed
@@ -85,13 +81,15 @@ public class ShopConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        List<String> SECURED_URLS = List.of(API+"/carts/**", API+"/cartItems/**", API+"/orders/**");
+
         http.csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))  // NEW: Integrate CORS (uses the bean above)
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/v1/auth/**", "/api/v1/products/**").permitAll()  // NEW: Allow public access to auth & products
-                        .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated()
+                        .requestMatchers(API+"/auth/**", API+"/products/**").permitAll()  // NEW: Allow public access to auth & products
+                        //.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated() // Temporarily disable security for dev
                         .anyRequest().permitAll());
 
         http.authenticationProvider(authenticationProvider());
