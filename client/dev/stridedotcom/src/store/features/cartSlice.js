@@ -59,11 +59,13 @@ const cartSlice = createSlice({
             //     state.totalAmount = action.payload.totalAmount;
             //     state.totalPrice = action.payload.totalPrice;
             // })
-            .addCase(addToCart.fulfilled, (state) => {
+            .addCase(addToCart.fulfilled, (state, action) => {
                 // state.items.push(action.payload);
                 // state.totalAmount += action.payload.quantity;
                 // state.totalPrice += action.payload.price * action.payload.quantity;
-                state.successMessage = "Item added to cart Successfully!";
+                //state.successMessage = "Item added to cart Successfully!";
+                state.successMessage = action.payload.message;
+                state.errorMessage = null;
             })
             .addCase(addToCart.rejected, (state, action) => {
                 state.errorMessage = action.error.message;

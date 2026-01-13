@@ -10,6 +10,8 @@ import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
 import QuantityUpdater from "../utils/QuantityUpdater";
 import { addToCart } from "@/store/features/cartSlice";
+import { toast, ToastContainer } from "react-toastify";
+import { useSelector } from "react-redux";
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -24,6 +26,7 @@ const ProductDetails = () => {
   const sliderRef = useRef(null);
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
+  const { errorMessage, successMessage } = useSelector((state) => state.cart);
 
   const handleAddToCart = async () => {
     if (!product?.id) {
@@ -37,11 +40,13 @@ const ProductDetails = () => {
         quantity 
       })).unwrap();
       
-      console.log("Add to cart success:", result);
+      //console.log("Add to cart success:", result);
+      toast.success(successMessage || "Item added to cart successfully!");
       // Optionally show a success toast here
     } catch (err) {
       console.error("Add to cart failed:", err);
       // Optionally show an error toast here
+      toast.error(errorMessage || "Failed to add item to cart.");
     }
   };
 
@@ -113,6 +118,7 @@ const ProductDetails = () => {
   if (error)
     return (
       <div className="p-8 min-h-screen flex items-center justify-center">
+      <ToastContainer />
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <Link to="/">
