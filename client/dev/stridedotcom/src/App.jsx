@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Home from "@/components/home/Home.jsx";
 import Products from './components/product/Products';
 import ProductDetails from './components/product/ProductDetails';
+import Cart from './components/cart/Cart';
 
 function App() {
   const router = createBrowserRouter(
