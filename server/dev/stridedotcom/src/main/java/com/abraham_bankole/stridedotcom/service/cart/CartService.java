@@ -53,6 +53,15 @@ public class CartService implements iCartService{
         });
     }
 
+    @Override
+    public Cart initializeGuestCart() {
+        return cartRepository.findAll().stream().findFirst().orElseGet(() -> {
+            Cart cart = new Cart();
+            cart.setTotalAmount(BigDecimal.ZERO);
+            return cartRepository.save(cart);
+        });
+    }
+
 
     @Override
     public BigDecimal getTotalPrice(Long cartId) {
