@@ -27,10 +27,14 @@ import { api } from "@/components/services/api";
 export const addToCart = createAsyncThunk(
   "cart/addToCart", 
   async ({ productId, quantity }) => {
-    const response = await api.post('/cartItems/item/add', null, {
-      params: { productId, quantity }
-    });
-    console.log("Cart Slice response", response.data);
+    
+    const formData = new FormData();
+    formData.append("productId", productId);
+    formData.append("quantity", quantity);
+
+    const response = await api.post('/cartItems/item/add', formData);
+    console.log("Cart Slice response 1: ", response.data);
+    console.log("Cart Slice response 2: ", response.data.data);
     return response.data;
   }
 );
@@ -56,7 +60,7 @@ const cartSlice = createSlice({
             //     state.totalAmount = action.payload.totalAmount;
             //     state.totalPrice = action.payload.totalPrice;
             // })
-            .addCase(addToCart.fulfilled, (state, action) => {
+            .addCase(addToCart.fulfilled, (state) => {
                 // state.items.push(action.payload);
                 // state.totalAmount += action.payload.quantity;
                 // state.totalPrice += action.payload.price * action.payload.quantity;
