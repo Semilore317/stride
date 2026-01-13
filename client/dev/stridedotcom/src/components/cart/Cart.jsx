@@ -1,6 +1,24 @@
 import React from "react";
-
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getUserCart } from "@/store/features/cartSlice";
+import { useEffect } from "react";
 const Cart = () => {
+  const { userId } = useParams();
+  const dispatch = useDispatch();
+
+  const cart = useSelector((state) => state.cart);
+
+  useEffect(() => {
+    if (userId) {
+      dispatch(getUserCart(userId));
+    }
+  }, [userId, dispatch]);
+
+//   console.log("Cart items:", cart.items);
+//   console.log("Cart total amount:", cart.totalAmount);
+//   console.log("Cart total price:", cart.totalPrice);
+    console.log("Cart state:", cart);
   return (
     <>
       {/*
@@ -27,9 +45,9 @@ const Cart = () => {
           </tr>
         </thead>
         <tbody>
-            <tr>
-                <td></td>
-            </tr>
+          <tr>
+            <td></td>
+          </tr>
         </tbody>
       </table>
     </>

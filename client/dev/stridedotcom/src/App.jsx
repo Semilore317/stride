@@ -13,6 +13,7 @@ function App() {
         <Route path="/products" element={<Products />} />
         <Route path='/products/:name' element={<ProductDetails />} />
         <Route path='/products/category/:categoryId/products/' element={<Products />} />
+        <Route path='/cart/:userId/my-cart' element={<Cart />} />
         {/* optional catch-all */}
         <Route path="*" element={
           <div>
