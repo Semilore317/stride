@@ -86,6 +86,8 @@ export const getUserCart = createAsyncThunk(
   "cart/getUserCart",
   async (userId) => {
     const response = await api.get(`/carts/user/${userId}/cart`);
+    console.log("User cart fetched:", response.data);
+    console.log("User cart fetched data:", response.data.data);
     return response.data;
   }
 );
