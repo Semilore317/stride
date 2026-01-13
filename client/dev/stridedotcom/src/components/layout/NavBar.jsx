@@ -12,7 +12,10 @@ const NavBar = ({ isDark, toggleTheme }) => {
     const [open, setOpen] = useState(false);
 
     const handleLinkClick = () => setOpen(false);
-
+    
+    // manual hack for testing
+    // TODO: update userId selection process
+    const userId = 1;
     return (
       <nav
         className="sticky top-0 z-50 w-full backdrop-blur-md transition-colors duration-300
@@ -31,7 +34,7 @@ const NavBar = ({ isDark, toggleTheme }) => {
             {/* Desktop Nav */}
             <div className="hidden md:flex space-x-6 items-center">
               <NavLink to="/products">All Products</NavLink>
-              <NavLink to="/cart/:userId/my-cart"> My Cart </NavLink>
+              <NavLink to={`/cart/${userId}/my-cart`}> My Cart </NavLink>
               <NavLink to="/pricing">Manage Products</NavLink>
               <NavLink to="/about">About</NavLink>
               <NavLink to="/more">My Account</NavLink>
@@ -77,7 +80,7 @@ const NavBar = ({ isDark, toggleTheme }) => {
                       All Products
                     </NavLink>
                     <NavLink
-                      to="/cart/:userId/my-cart"
+                      to="/cart/${userId}/my-cart"
                       mobile
                       onClick={handleLinkClick}
                     >
