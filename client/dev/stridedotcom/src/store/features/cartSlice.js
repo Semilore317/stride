@@ -17,7 +17,7 @@ import { api } from "@/components/services/api";
 //     const formData = new FormData();
 //     formData.append("productId", productId);
 //     formData.append("quantity", quantity);
-    
+
 //     const response = await api.post("/cartItems/item/add", formData);
 //     console.log("Cart Slice response", response.data);
 //     console.log("Cart Slice response", response.data.data);
@@ -25,62 +25,14 @@ import { api } from "@/components/services/api";
 // });
 
 export const addToCart = createAsyncThunk(
-  "cart/addToCart", 
+  "cart/addToCart",
   async ({ productId, quantity }) => {
-    
-    const formData = new FormData();
-    formData.append("productId", productId);
-    formData.append("quantity", quantity);
 
-    const response = await api.post('/cartItems/item/add', formData);
+    const response = await api.post(`/cartItems/item/add?productId=${productId}&quantity=${quantity}`);
     console.log("Cart Slice response 1: ", response.data);
     return response.data;
   }
 );
-
-
-const initialState = {
-    items: [],
-    totalAmount: 0,
-    totalPrice: 0,
-    //status: "idle",
-    successMessage: null,
-    errorMessage: null,
-};
-
-const cartSlice = createSlice({
-    name: "cart",
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-            // .addCase(fetchCart.fulfilled, (state, action) => {
-            //     state.items = action.payload.items;
-            //     state.totalAmount = action.payload.totalAmount;
-            //     state.totalPrice = action.payload.totalPrice;
-            // })
-            .addCase(addToCart.fulfilled, (state, action) => {
-                // state.items.push(action.payload);
-                // state.totalAmount += action.payload.quantity;
-                // state.totalPrice += action.payload.price * action.payload.quantity;
-                //state.successMessage = "Item added to cart Successfully!";
-                state.successMessage = action.payload.message;
-                state.errorMessage = null;
-            })
-            .addCase(addToCart.rejected, (state, action) => {
-                state.errorMessage = action.error.message;
-            })
-            .addCase(getUserCart.fulfilled, (state, action) => {
-                state.items = action.payload.items;
-                state.totalAmount = action.payload.totalAmount;
-                state.totalPrice = action.payload.totalPrice;
-            });
-            
-    },
-});
-
-// export const { addItem, removeItem, clearCart } = cartSlice.actions;
-
 
 export const getUserCart = createAsyncThunk(
   "cart/getUserCart",
@@ -91,5 +43,62 @@ export const getUserCart = createAsyncThunk(
     return response.data;
   }
 );
+
+export const getGuestCart = createAsyncThunk(
+  "cart/getGuestCart",
+  async () => {
+    const response = await api.get(`/carts/guest/cart`);
+    console.log("Guest cart fetched:", response.data);
+    console.log("Guest cart fetched data:", response.data.data);
+    return response.data;
+  }
+);
+
+const initialState = {
+  items: [],
+  totalAmount: 0,
+  totalPrice: 0,
+  //status: "idle",
+  successMessage: null,
+  errorMessage: null,
+};
+
+const cartSlice = createSlice({
+  name: "cart",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      // .addCase(fetchCart.fulfilled, (state, action) => {
+      //     state.items = action.payload.items;
+      //     state.totalAmount = action.payload.totalAmount;
+      //     state.totalPrice = action.payload.totalPrice;
+      // })
+      .addCase(addToCart.fulfilled, (state, action) => {
+        // state.items.push(action.payload);
+        // state.totalAmount += action.payload.quantity;
+        // state.totalPrice += action.payload.price * action.payload.quantity;
+        //state.successMessage = "Item added to cart Successfully!";
+        state.successMessage = action.payload.message;
+        state.errorMessage = null;
+      })
+      .addCase(addToCart.rejected, (state, action) => {
+        state.errorMessage = action.error.message;
+      })
+      .addCase(getUserCart.fulfilled, (state, action) => {
+        state.items = action.payload.data?.items || [];
+        state.totalAmount = action.payload.data?.totalAmount || 0;
+        state.totalPrice = action.payload.data?.totalPrice || 0;
+      })
+      .addCase(getGuestCart.fulfilled, (state, action) => {
+        state.items = action.payload.data?.items || [];
+        state.totalAmount = action.payload.data?.totalAmount || 0;
+        state.totalPrice = action.payload.data?.totalPrice || 0;
+      });
+
+  },
+});
+
+// export const { addItem, removeItem, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

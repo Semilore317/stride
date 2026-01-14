@@ -9,7 +9,7 @@ import { FaHeart } from "react-icons/fa";
 import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
 import QuantityUpdater from "../utils/QuantityUpdater";
-import { addToCart } from "@/store/features/cartSlice";
+import { addToCart, getGuestCart } from "@/store/features/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import 'react-toastify/dist/ReactToastify.css';
@@ -34,13 +34,16 @@ const ProductDetails = () => {
       console.error("Product ID is missing");
       return;
     }
-    
+
     try {
-      const result = await dispatch(addToCart({ 
-        productId: product.id, 
-        quantity 
+      const result = await dispatch(addToCart({
+        productId: product.id,
+        quantity
       })).unwrap();
-      
+
+      // Refresh cart data using guest cart
+      dispatch(getGuestCart());
+
       //console.log("Add to cart success:", result);
       toast.success(successMessage || "Item added to cart successfully!");
       // Optionally show a success toast here
@@ -119,7 +122,7 @@ const ProductDetails = () => {
   if (error)
     return (
       <div className="p-8 min-h-screen flex items-center justify-center">
-      <ToastContainer />
+        <ToastContainer />
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <Link to="/">
@@ -209,7 +212,7 @@ const ProductDetails = () => {
           <p className="text-gray-700 dark:text-gray-300">
             {product.inventory} in stock
           </p>
-          
+
           {/* Mobile Layout */}
           <div className="flex flex-col gap-4 mt-4 md:hidden">
             <div className="flex items-center justify-between gap-4">
@@ -235,7 +238,7 @@ const ProductDetails = () => {
                 </span>
               </div>
             </div>
-            <div 
+            <div
               onClick={handleAddToCart}
               className="flex items-center justify-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition w-full"
             >
@@ -251,7 +254,7 @@ const ProductDetails = () => {
               incrementQty={incrementQty}
               decrementQty={decrementQty}
             />
-            <div 
+            <div
               onClick={handleAddToCart}
               className="flex items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded cursor-pointer transition"
             >

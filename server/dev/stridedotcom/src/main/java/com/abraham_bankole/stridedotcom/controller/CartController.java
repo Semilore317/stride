@@ -19,6 +19,12 @@ public class CartController {
         return ResponseEntity.ok(new ApiResponse("Success", cart));
     }
 
+    @GetMapping("/guest/cart")
+    public ResponseEntity<ApiResponse> getGuestCart() {
+        Cart cart = cartService.getGuestCart();
+        return ResponseEntity.ok(new ApiResponse("Success", cart));
+    }
+
     @DeleteMapping("/cart/{cartId}/clear")
     public void clearCart(@PathVariable Long cartId) {
         cartService.clearCart(cartId);
