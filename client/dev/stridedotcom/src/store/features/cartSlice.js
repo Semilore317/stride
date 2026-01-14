@@ -1,104 +1,166 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "@/components/services/api";
+import {
+  getStoredCart,
+  saveCart,
+  clearStoredCart,
+  addItemToStoredCart,
+  removeItemFromStoredCart,
+  updateItemQuantity as updateStoredItemQuantity,
+  calculateCartTotals
+} from "@/utils/cartStorage";
 
-// export const fetchCart = createAsyncThunk("cart/fetchCart", async () => {
-//     const response = await api.get("/cart");
-//     return response.data;
-// });
+// ============================================
+// Async Thunks (For authenticated users - future use)
+// ============================================
 
-// export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
-//     const response = await api.post("/cartItems/item/add", { productId, quantity });
-//     console.log("Cart Slice response", response.data);
-//     console.log("Cart Slice response", response.data.data);
-//     return response.data.data;
-// });
-
-// export const addToCart = createAsyncThunk("cart/addToCart", async ({ productId, quantity }) => {
-//     const formData = new FormData();
-//     formData.append("productId", productId);
-//     formData.append("quantity", quantity);
-
-//     const response = await api.post("/cartItems/item/add", formData);
-//     console.log("Cart Slice response", response.data);
-//     console.log("Cart Slice response", response.data.data);
-//     return response.data.data;
-// });
-
-export const addToCart = createAsyncThunk(
-  "cart/addToCart",
-  async ({ productId, quantity }) => {
-
-    const response = await api.post(`/cartItems/item/add?productId=${productId}&quantity=${quantity}`);
-    console.log("Cart Slice response 1: ", response.data);
-    return response.data;
-  }
-);
-
+/**
+ * Fetch user's cart from server (for authenticated users)
+ */
 export const getUserCart = createAsyncThunk(
   "cart/getUserCart",
   async (userId) => {
     const response = await api.get(`/carts/user/${userId}/cart`);
-    console.log("User cart fetched:", response.data);
-    console.log("User cart fetched data:", response.data.data);
     return response.data;
   }
 );
 
-export const getGuestCart = createAsyncThunk(
-  "cart/getGuestCart",
-  async () => {
-    const response = await api.get(`/carts/guest/cart`);
-    console.log("Guest cart fetched:", response.data);
-    console.log("Guest cart fetched data:", response.data.data);
+/**
+ * Add item to user's server-side cart (for authenticated users)
+ */
+export const addToServerCart = createAsyncThunk(
+  "cart/addToServerCart",
+  async ({ productId, quantity }) => {
+    const response = await api.post(
+      `/cartItems/item/add?productId=${productId}&quantity=${quantity}`
+    );
     return response.data;
   }
 );
+
+// ============================================
+// Initial State (Load from localStorage for guests)
+// ============================================
+
+const storedItems = getStoredCart();
+const storedTotals = calculateCartTotals(storedItems);
 
 const initialState = {
-  items: [],
-  totalAmount: 0,
-  totalPrice: 0,
-  //status: "idle",
+  items: storedItems,
+  totalAmount: storedTotals.totalAmount,
+  totalPrice: storedTotals.totalPrice,
   successMessage: null,
   errorMessage: null,
+  isAuthenticated: false, // Will be used when auth is implemented
 };
+
+// ============================================
+// Cart Slice
+// ============================================
 
 const cartSlice = createSlice({
   name: "cart",
   initialState,
-  reducers: {},
+  reducers: {
+    /**
+     * Load cart from localStorage
+     */
+    loadCart: (state) => {
+      const items = getStoredCart();
+      const totals = calculateCartTotals(items);
+      state.items = items;
+      state.totalAmount = totals.totalAmount;
+      state.totalPrice = totals.totalPrice;
+    },
+
+    /**
+     * Add item to cart (localStorage for guests)
+     */
+    addItem: (state, action) => {
+      const { product, quantity } = action.payload;
+      const updatedItems = addItemToStoredCart(product, quantity);
+      const totals = calculateCartTotals(updatedItems);
+
+      state.items = updatedItems;
+      state.totalAmount = totals.totalAmount;
+      state.totalPrice = totals.totalPrice;
+      state.successMessage = "Item added to cart!";
+      state.errorMessage = null;
+    },
+
+    /**
+     * Remove item from cart
+     */
+    removeItem: (state, action) => {
+      const { productId } = action.payload;
+      const updatedItems = removeItemFromStoredCart(productId);
+      const totals = calculateCartTotals(updatedItems);
+
+      state.items = updatedItems;
+      state.totalAmount = totals.totalAmount;
+      state.totalPrice = totals.totalPrice;
+      state.successMessage = "Item removed from cart";
+      state.errorMessage = null;
+    },
+
+    /**
+     * Update item quantity
+     */
+    updateQuantity: (state, action) => {
+      const { productId, quantity } = action.payload;
+      const updatedItems = updateStoredItemQuantity(productId, quantity);
+      const totals = calculateCartTotals(updatedItems);
+
+      state.items = updatedItems;
+      state.totalAmount = totals.totalAmount;
+      state.totalPrice = totals.totalPrice;
+    },
+
+    /**
+     * Clear entire cart
+     */
+    clearCart: (state) => {
+      clearStoredCart();
+      state.items = [];
+      state.totalAmount = 0;
+      state.totalPrice = 0;
+      state.successMessage = "Cart cleared";
+    },
+
+    /**
+     * Clear messages
+     */
+    clearMessages: (state) => {
+      state.successMessage = null;
+      state.errorMessage = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchCart.fulfilled, (state, action) => {
-      //     state.items = action.payload.items;
-      //     state.totalAmount = action.payload.totalAmount;
-      //     state.totalPrice = action.payload.totalPrice;
-      // })
-      .addCase(addToCart.fulfilled, (state, action) => {
-        // state.items.push(action.payload);
-        // state.totalAmount += action.payload.quantity;
-        // state.totalPrice += action.payload.price * action.payload.quantity;
-        //state.successMessage = "Item added to cart Successfully!";
-        state.successMessage = action.payload.message;
-        state.errorMessage = null;
-      })
-      .addCase(addToCart.rejected, (state, action) => {
-        state.errorMessage = action.error.message;
-      })
+      // For authenticated users (future use)
       .addCase(getUserCart.fulfilled, (state, action) => {
         state.items = action.payload.data?.items || [];
         state.totalAmount = action.payload.data?.totalAmount || 0;
         state.totalPrice = action.payload.data?.totalPrice || 0;
+        state.isAuthenticated = true;
       })
-      .addCase(getGuestCart.fulfilled, (state, action) => {
-        state.items = action.payload.data?.items || [];
-        state.totalAmount = action.payload.data?.totalAmount || 0;
-        state.totalPrice = action.payload.data?.totalPrice || 0;
+      .addCase(addToServerCart.fulfilled, (state, action) => {
+        state.successMessage = action.payload.message;
+        state.errorMessage = null;
+      })
+      .addCase(addToServerCart.rejected, (state, action) => {
+        state.errorMessage = action.error.message;
       });
-
   },
 });
 
-// export const { addItem, removeItem, clearCart } = cartSlice.actions;
+export const {
+  loadCart,
+  addItem,
+  removeItem,
+  updateQuantity,
+  clearCart,
+  clearMessages
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
