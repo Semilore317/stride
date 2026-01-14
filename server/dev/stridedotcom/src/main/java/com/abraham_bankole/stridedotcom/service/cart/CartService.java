@@ -14,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class CartService implements iCartService{
+public class CartService implements iCartService {
     // dependencies
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
@@ -46,11 +46,11 @@ public class CartService implements iCartService{
     public Cart initializeNewCartForUser(User user) {
         return Optional.ofNullable(getCartByUserId(user.getId()))
                 .orElseGet(() -> {
-            Cart cart = new Cart();
-            cart.setUser(user);
-            cart.setTotalAmount(BigDecimal.ZERO); // initialized here
-            return cartRepository.save(cart);
-        });
+                    Cart cart = new Cart();
+                    cart.setUser(user);
+                    cart.setTotalAmount(BigDecimal.ZERO); // initialized here
+                    return cartRepository.save(cart);
+                });
     }
 
     @Override
@@ -62,6 +62,11 @@ public class CartService implements iCartService{
         });
     }
 
+    @Override
+    @Transactional
+    public Cart getGuestCart() {
+        return cartRepository.findAll().stream().findFirst().orElse(null);
+    }
 
     @Override
     public BigDecimal getTotalPrice(Long cartId) {
