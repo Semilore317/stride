@@ -2,7 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { api } from "@/components/services/api";
 import {
   getStoredCart,
-  saveCart,
+  //saveCart, -- to be implemented later
   clearStoredCart,
   addItemToStoredCart,
   removeItemFromStoredCart,
@@ -10,9 +10,8 @@ import {
   calculateCartTotals
 } from "@/utils/cartStorage";
 
-// ============================================
+
 // Async Thunks (For authenticated users - future use)
-// ============================================
 
 /**
  * Fetch user's cart from server (for authenticated users)
@@ -38,9 +37,7 @@ export const addToServerCart = createAsyncThunk(
   }
 );
 
-// ============================================
 // Initial State (Load from localStorage for guests)
-// ============================================
 
 const storedItems = getStoredCart();
 const storedTotals = calculateCartTotals(storedItems);
@@ -54,9 +51,7 @@ const initialState = {
   isAuthenticated: false, // Will be used when auth is implemented
 };
 
-// ============================================
 // Cart Slice
-// ============================================
 
 const cartSlice = createSlice({
   name: "cart",
