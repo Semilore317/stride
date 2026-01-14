@@ -9,7 +9,7 @@ import { FaHeart } from "react-icons/fa";
 import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
 import QuantityUpdater from "../utils/QuantityUpdater";
-import { addToCart, getGuestCart } from "@/store/features/cartSlice";
+import { addItem } from "@/store/features/cartSlice";
 import { toast, ToastContainer } from "react-toastify";
 import { useSelector } from "react-redux";
 import 'react-toastify/dist/ReactToastify.css';
@@ -29,29 +29,25 @@ const ProductDetails = () => {
   const touchEndX = useRef(0);
   const { errorMessage, successMessage } = useSelector((state) => state.cart);
 
-  const handleAddToCart = async () => {
+  const handleAddToCart = () => {
     if (!product?.id) {
       console.error("Product ID is missing");
       return;
     }
 
-    try {
-      const result = await dispatch(addToCart({
-        productId: product.id,
-        quantity
-      })).unwrap();
+    // Add item to localStorage cart
+    dispatch(addItem({
+      product: {
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        images: product.images
+      },
+      quantity
+    }));
 
-      // Refresh cart data using guest cart
-      dispatch(getGuestCart());
-
-      //console.log("Add to cart success:", result);
-      toast.success(successMessage || "Item added to cart successfully!");
-      // Optionally show a success toast here
-    } catch (err) {
-      console.error("Add to cart failed:", err);
-      // Optionally show an error toast here
-      toast.error(errorMessage || "Failed to add item to cart.");
-    }
+    toast.success("Item added to cart!");
   };
 
   const formatPrice = (price) => {
