@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { loadCart, removeItem, updateQuantity, clearCart } from "@/store/features/cartSlice";
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from "react-icons/fi";
 import ProductImage from "@/components/utils/ProductImage";
+import LoadSpinner from "../common/LoadSpinner";
 
 const Cart = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,14 @@ const Cart = () => {
       minimumFractionDigits: 2,
     }).format(Number(price));
   };
+
+  const handlePlaceOrder = () => {
+    alert("Place Order functionality coming soon!");
+  };
+
+  // if(isLoading){
+  //   return <LoadSpinner />;
+  // }
 
   return (
     <section className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300 px-6 py-10">
@@ -101,7 +110,9 @@ const Cart = () => {
                   {/* Product Details */}
                   <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-4">
                     <div className="flex-1">
-                      <h3 className="font-semibold text-lg">{item.product?.name || "Unknown Product"}</h3>
+                      <h3 className="font-semibold text-lg">
+                        {item.product?.name || "Unknown Product"}
+                      </h3>
                       <p className="text-sm text-gray-600 dark:text-gray-400">
                         {item.product?.brand || "Unknown Brand"}
                       </p>
@@ -114,7 +125,12 @@ const Cart = () => {
                     <div className="flex items-center gap-3">
                       <div className="flex items-center border border-gray-300 dark:border-gray-700 rounded-lg">
                         <button
-                          onClick={() => handleUpdateQuantity(item.product.id, item.quantity - 1)}
+                          onClick={() =>
+                            handleUpdateQuantity(
+                              item.product.id,
+                              item.quantity - 1
+                            )
+                          }
                           disabled={item.quantity <= 1}
                           className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition disabled:opacity-40 disabled:cursor-not-allowed"
                         >
@@ -124,7 +140,12 @@ const Cart = () => {
                           {item.quantity}
                         </span>
                         <button
-                          onClick={() => handleUpdateQuantity(item.product.id, item.quantity + 1)}
+                          onClick={() =>
+                            handleUpdateQuantity(
+                              item.product.id,
+                              item.quantity + 1
+                            )
+                          }
                           className="px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
                         >
                           <FiPlus size={14} />
@@ -162,7 +183,9 @@ const Cart = () => {
                   </div>
                   <div className="flex justify-between text-gray-600 dark:text-gray-400">
                     <span>Shipping</span>
-                    <span className="text-green-600 dark:text-green-400">Free</span>
+                    <span className="text-green-600 dark:text-green-400">
+                      Free
+                    </span>
                   </div>
                   <hr className="border-gray-200 dark:border-gray-700" />
                   <div className="flex justify-between font-bold text-lg">
@@ -173,9 +196,7 @@ const Cart = () => {
                   </div>
                 </div>
 
-                <button
-                  className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg transition font-medium mb-3"
-                >
+                <button className="w-full bg-purple-600 hover:bg-purple-700 text-white py-3 rounded-lg transition font-medium mb-3">
                   Proceed to Checkout
                 </button>
 

@@ -5,6 +5,7 @@ export const placeOrders = createAsyncThunk(
   "order/placeOrders",
   async (userId) => {
     const response = await api.get(`/user/${userId}/placeOrder`);
+    console.log("Order response:", response.data);
     return response.data;
   }
 );
