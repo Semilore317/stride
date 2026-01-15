@@ -5,6 +5,7 @@ import Home from "@/components/home/Home.jsx";
 import Products from './components/product/Products';
 import ProductDetails from './components/product/ProductDetails';
 import Cart from './components/cart/Cart';
+import Order from './components/order/Order';
 
 function App() {
   const router = createBrowserRouter(
@@ -15,15 +16,16 @@ function App() {
         <Route path='/products/:name' element={<ProductDetails />} />
         <Route path='/products/category/:categoryId/products/' element={<Products />} />
         <Route path='/cart/:userId/my-cart' element={<Cart />} />
+        <Route path='/user/:userId/orders' element={<Order />} />
         {/* optional catch-all */}
         <Route path="*" element={
           <div>
             <h1>
               404 - Not Found
             </h1>
-              <p>Sorry, the page you are looking for does not exist.</p>
+            <p>Sorry, the page you are looking for does not exist.</p>
           </div>
-          } />
+        } />
       </Route>
     )
   )
@@ -33,3 +35,4 @@ function App() {
 }
 
 export default App
+

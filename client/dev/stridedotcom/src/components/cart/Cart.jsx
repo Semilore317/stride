@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useParams, useNavigate } from "react-router-dom";
-import { loadCart, removeItem, updateQuantity, clearCart } from "@/store/features/cartSlice";
+import { loadCart, removeItem, updateQuantity, clearCart, syncCartToServer } from "@/store/features/cartSlice";
 import { placeOrders } from "@/store/features/orderSlice";
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from "react-icons/fi";
 import ProductImage from "@/components/utils/ProductImage";
@@ -59,11 +59,18 @@ const Cart = () => {
 
     setIsPlacingOrder(true);
     try {
+      // First sync localStorage cart to server
+      toast.info("Syncing cart...");
+      await dispatch(syncCartToServer(userId)).unwrap();
+
+      // Then place the order
       const result = await dispatch(placeOrders(userId)).unwrap();
       toast.success(result.message || "Order placed successfully!");
       dispatch(clearCart());
-      // Optionally navigate to orders page
-      // navigate(`/user/${userId}/orders`);
+      // Navigate to orders page after a brief delay
+      setTimeout(() => {
+        navigate(`/user/${userId}/orders`);
+      }, 1500);
     } catch (error) {
       toast.error(error || "Failed to place order. Please try again.");
     } finally {

@@ -37,6 +37,33 @@ export const addToServerCart = createAsyncThunk(
   }
 );
 
+/**
+ * Sync localStorage cart to server for a specific user
+ * This pushes all local cart items to the user's server-side cart
+ */
+export const syncCartToServer = createAsyncThunk(
+  "cart/syncCartToServer",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const items = getStoredCart();
+      if (items.length === 0) {
+        return { message: "No items to sync", synced: 0 };
+      }
+
+      // Add each item to the user's server cart
+      for (const item of items) {
+        await api.post(
+          `/cartItems/user/${userId}/item/add?productId=${item.product.id}&quantity=${item.quantity}`
+        );
+      }
+
+      return { message: "Cart synced successfully", synced: items.length };
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to sync cart");
+    }
+  }
+);
+
 // Initial State (Load from localStorage for guests)
 
 const storedItems = getStoredCart();
@@ -49,6 +76,7 @@ const initialState = {
   successMessage: null,
   errorMessage: null,
   isAuthenticated: false, // Will be used when auth is implemented
+  isSyncing: false,
 };
 
 // Cart Slice
@@ -145,6 +173,19 @@ const cartSlice = createSlice({
       })
       .addCase(addToServerCart.rejected, (state, action) => {
         state.errorMessage = action.error.message;
+      })
+      // Sync cart to server
+      .addCase(syncCartToServer.pending, (state) => {
+        state.isSyncing = true;
+        state.errorMessage = null;
+      })
+      .addCase(syncCartToServer.fulfilled, (state, action) => {
+        state.isSyncing = false;
+        state.successMessage = action.payload.message;
+      })
+      .addCase(syncCartToServer.rejected, (state, action) => {
+        state.isSyncing = false;
+        state.errorMessage = action.payload;
       });
   },
 });
