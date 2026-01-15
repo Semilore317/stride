@@ -35,6 +35,7 @@ const NavBar = ({ isDark, toggleTheme }) => {
           <div className="hidden md:flex space-x-6 items-center">
             <NavLink to="/products">All Products</NavLink>
             <NavLink to={`/cart/${userId}/my-cart`}> My Cart </NavLink>
+            <NavLink to="/wishlist">My Wishlist</NavLink>
             <NavLink to={`/user/${userId}/orders`}>My Orders</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/more">My Account</NavLink>
@@ -84,6 +85,9 @@ const NavBar = ({ isDark, toggleTheme }) => {
                     onClick={handleLinkClick}
                   >
                     My Cart
+                  </NavLink>
+                  <NavLink to="/wishlist" mobile onClick={handleLinkClick}>
+                    My Wishlist
                   </NavLink>
                   <NavLink to={`/user/${userId}/orders`} mobile onClick={handleLinkClick}>
                     My Orders

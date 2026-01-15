@@ -6,6 +6,7 @@ import Products from './components/product/Products';
 import ProductDetails from './components/product/ProductDetails';
 import Cart from './components/cart/Cart';
 import Order from './components/order/Order';
+import Wishlist from './components/wishlist/Wishlist';
 
 function App() {
   const router = createBrowserRouter(
@@ -17,6 +18,7 @@ function App() {
         <Route path='/products/category/:categoryId/products/' element={<Products />} />
         <Route path='/cart/:userId/my-cart' element={<Cart />} />
         <Route path='/user/:userId/orders' element={<Order />} />
+        <Route path='/wishlist' element={<Wishlist />} />
         {/* optional catch-all */}
         <Route path="*" element={
           <div>
