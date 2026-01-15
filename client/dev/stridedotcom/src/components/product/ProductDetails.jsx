@@ -10,9 +10,9 @@ import SimilarProducts from "./SimilarProducts";
 import ImageOverlay from "../common/ImageOverlay";
 import QuantityUpdater from "../utils/QuantityUpdater";
 import { addItem } from "@/store/features/cartSlice";
-import { toast, ToastContainer } from "react-toastify";
+import { addToWishlist, removeFromWishlist } from "@/store/features/wishlistSlice";
+import { toast } from "react-toastify";
 import { useSelector } from "react-redux";
-import 'react-toastify/dist/ReactToastify.css';
 
 const ProductDetails = () => {
   const { name } = useParams();
@@ -21,7 +21,7 @@ const ProductDetails = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const [isWishlisted, setIsWishlisted] = useState(false);
+  const wishlistItems = useSelector((state) => state.wishlist.items);
   const [quantity, setQuantity] = useState(1);
   const [showOverlay, setShowOverlay] = useState(false);
   const sliderRef = useRef(null);
@@ -106,8 +106,25 @@ const ProductDetails = () => {
     else if (deltaX < -50) prevImage();
   };
 
+  // Check if current product is in wishlist
+  const isWishlisted = product ? wishlistItems.some(item => item.id === product.id) : false;
+
   const handleWishlistToggle = () => {
-    setIsWishlisted((prev) => !prev);
+    if (!product) return;
+
+    if (isWishlisted) {
+      dispatch(removeFromWishlist(product.id));
+      toast.info("Removed from wishlist");
+    } else {
+      dispatch(addToWishlist({
+        id: product.id,
+        name: product.name,
+        brand: product.brand,
+        price: product.price,
+        images: product.images
+      }));
+      toast.success("Added to wishlist!");
+    }
   };
 
   const incrementQty = () => setQuantity((prev) => prev + 1);
@@ -118,7 +135,6 @@ const ProductDetails = () => {
   if (error)
     return (
       <div className="p-8 min-h-screen flex items-center justify-center">
-        <ToastContainer />
         <div className="text-center">
           <p className="text-red-600 dark:text-red-400 mb-4">{error}</p>
           <Link to="/">
