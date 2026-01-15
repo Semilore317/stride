@@ -6,7 +6,7 @@ import { placeOrders } from "@/store/features/orderSlice";
 import { FiTrash2, FiMinus, FiPlus, FiShoppingBag } from "react-icons/fi";
 import ProductImage from "@/components/utils/ProductImage";
 import LoadSpinner from "../common/LoadSpinner";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 const Cart = () => {
   const { userId } = useParams();
@@ -84,7 +84,6 @@ const Cart = () => {
 
   return (
     <section className="min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300 px-6 py-10">
-      <ToastContainer />
       {/* Header */}
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center justify-between mb-8">
