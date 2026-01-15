@@ -93,7 +93,7 @@ const Footer = ({ isDark }) => {
         <div className="mt-10 max-w-7xl mx-auto px-4">
           <Separator className="bg-gray-800 mb-4" />
           <p className="text-center text-sm text-gray-500">
-            &copy; 2025 Stride.com. All rights reserved.
+            &copy; 2026 Stride.com. All rights reserved.
           </p>
         </div>
       </footer>
