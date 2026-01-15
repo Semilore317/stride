@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class OrderService implements iOrderService{
+public class OrderService implements iOrderService {
     private final OrderRepository orderRepository;
     private final ProductRepository productRepository;
     private final iCartService cartService;
@@ -28,7 +28,10 @@ public class OrderService implements iOrderService{
 
     @Override
     public Order placeOrder(Long userId) {
-        Cart cart = cartService.getCart(userId);
+        Cart cart = cartService.getCartByUserId(userId);
+        if (cart == null || cart.getItems().isEmpty()) {
+            throw new IllegalStateException("Cart is empty or not found for user: " + userId);
+        }
         Order order = createOrder(cart);
         List<OrderItem> orderItemList = createOrderItems(order, cart);
         order.setOrderItems(new HashSet<>(orderItemList));
@@ -37,7 +40,6 @@ public class OrderService implements iOrderService{
         cartService.clearCart(cart.getId());
         return savedOrder;
     }
-
 
     // helper methods
     private Order createOrder(Cart cart) {
@@ -58,8 +60,7 @@ public class OrderService implements iOrderService{
                     order,
                     product,
                     cartItem.getUnitPrice(),
-                    cartItem.getQuantity()
-            );
+                    cartItem.getQuantity());
         }).toList();
     }
 
@@ -73,11 +74,11 @@ public class OrderService implements iOrderService{
     @Override
     public List<OrderDto> getUserOrders(Long userId) {
         List<Order> orders = orderRepository.findByUser_Id(userId);
-        return orders.stream().map(this :: convertToDto).toList();
+        return orders.stream().map(this::convertToDto).toList();
     }
-    
+
     @Override
-    public OrderDto convertToDto(Order order){
+    public OrderDto convertToDto(Order order) {
         return modelMapper.map(order, OrderDto.class);
     }
 }

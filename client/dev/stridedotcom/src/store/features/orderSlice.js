@@ -13,6 +13,18 @@ export const placeOrders = createAsyncThunk(
   }
 );
 
+export const fetchUserOrders = createAsyncThunk(
+  "order/fetchUserOrders",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/orders/user/${userId}/order`);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Failed to fetch orders");
+    }
+  }
+);
+
 const initialState = {
   orders: [],
   loading: false,
@@ -25,11 +37,15 @@ const orderSlice = createSlice({
   name: "order",
   initialState,
   reducers: {
-    // synchronous reducers
+    clearOrderMessages: (state) => {
+      state.successMessage = null;
+      state.errorMessage = null;
+    },
   },
   extraReducers: (builder) => {
     // async thunk reducers
     builder
+      // Place order
       .addCase(placeOrders.pending, (state) => {
         state.loading = true;
         state.successMessage = null;
@@ -37,15 +53,27 @@ const orderSlice = createSlice({
       })
       .addCase(placeOrders.fulfilled, (state, action) => {
         state.loading = false;
-        state.orders = action.payload;
-        //state.successMessage = "Order placed successfully!";
         state.successMessage = action.payload.message || "Order placed successfully!";
       })
       .addCase(placeOrders.rejected, (state, action) => {
         state.loading = false;
-        state.errorMessage = action.error.message || "Failed to place order.";
+        state.errorMessage = action.payload || "Failed to place order.";
+      })
+      // Fetch user orders
+      .addCase(fetchUserOrders.pending, (state) => {
+        state.loading = true;
+        state.errorMessage = null;
+      })
+      .addCase(fetchUserOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload.data || [];
+      })
+      .addCase(fetchUserOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.errorMessage = action.payload || "Failed to fetch orders.";
       });
   },
 });
 
+export const { clearOrderMessages } = orderSlice.actions;
 export const orderReducer = orderSlice.reducer;
