@@ -67,7 +67,7 @@ const Home = () => {
       <Hero />
       <ToastContainer />
       <div className="p-6 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-10 bg-purple-100 dark:bg-black">
                     {currentProducts.map((product) => (
                         <div
                             key={product.id || product.name}
