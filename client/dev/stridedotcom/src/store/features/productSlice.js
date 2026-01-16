@@ -100,6 +100,48 @@ export const getProductsByCategory = createAsyncThunk(
   }
 );
 
+export const addProduct = createAsyncThunk(
+  "product/addProduct",
+  async (productData, { rejectWithValue }) => {
+    try {
+      const response = await api.post("/products/add", productData);
+      return response.data.data;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to add product: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const updateProduct = createAsyncThunk(
+  "product/updateProduct",
+  async ({ id, productData }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/products/product/${id}/update`, productData);
+      return response.data.data;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to update product: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
+export const deleteProduct = createAsyncThunk(
+  "product/deleteProduct",
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/products/product/${id}/delete`);
+      return id;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to delete product: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
 const initialState = {
   products: [],
   distinctProductsByName: [],
@@ -125,13 +167,16 @@ const productSlice = createSlice({
       }
     },
     decreaseQuantity: (state) => {
-      if(state.quantity > 1){
+      if (state.quantity > 1) {
         state.quantity--;
       }
     },
     increaseQuantity: (state) => {
-        state.quantity++;
+      state.quantity++;
     },
+    addBrand: (state, action) => {
+      state.selectedBrands.push(action.payload);
+    }
   },
   extraReducers: (builder) => {
     builder
@@ -181,9 +226,42 @@ const productSlice = createSlice({
       .addCase(getProductsByCategory.rejected, (state, action) => {
         state.errorMessage = action.payload;
         state.isLoading = false;
+      })
+      .addCase(addProduct.fulfilled, (state, action) => {
+        state.products.push(action.payload);
+        state.isLoading = false;
+        state.errorMessage = null;
+        toast.success("Product added successfully!");
+      })
+      .addCase(addProduct.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(updateProduct.fulfilled, (state, action) => {
+        const index = state.products.findIndex((p) => p.id === action.payload.id);
+        if (index !== -1) {
+          state.products[index] = action.payload;
+        }
+        state.isLoading = false;
+        state.errorMessage = null;
+        toast.success("Product updated successfully!");
+      })
+      .addCase(updateProduct.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.products = state.products.filter((p) => p.id !== action.payload);
+        state.isLoading = false;
+        state.errorMessage = null;
+        toast.success("Product deleted successfully!");
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
+        state.errorMessage = action.payload;
+        state.isLoading = false;
       });
   },
 });
 
-export const { filterByBrands, decreaseQuantity, increaseQuantity } = productSlice.actions;
+export const { filterByBrands, decreaseQuantity, increaseQuantity, addBrand } = productSlice.actions;
 export default productSlice.reducer;
