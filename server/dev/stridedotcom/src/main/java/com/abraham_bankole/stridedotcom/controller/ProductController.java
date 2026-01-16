@@ -57,7 +57,8 @@ public class ProductController {
     }
 
     @PutMapping("/product/{productId}/update")
-    public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request, @PathVariable Long productId) {
+    public ResponseEntity<ApiResponse> updateProduct(@RequestBody ProductUpdateRequest request,
+            @PathVariable Long productId) {
         Product theProduct = productService.updateProduct(request, productId);
         ProductDto productDto = productService.convertToDto(theProduct);
         return ResponseEntity.ok(new ApiResponse("Updated Product Successfully!", productDto));
@@ -70,14 +71,16 @@ public class ProductController {
     }
 
     @GetMapping("/products/by/brand-and-name")
-    public ResponseEntity<ApiResponse> getProductsByBrandAndName(@RequestParam String brandName, @RequestParam String productName) {
+    public ResponseEntity<ApiResponse> getProductsByBrandAndName(@RequestParam String brandName,
+            @RequestParam String productName) {
         List<Product> products = productService.getProductsByBrandAndName(brandName, productName);
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
         return ResponseEntity.ok(new ApiResponse("Success", convertedProducts));
     }
 
     @GetMapping("/products/by/category-and-brand")
-    public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category, @RequestParam String brand) {
+    public ResponseEntity<ApiResponse> getProductByCategoryAndBrand(@RequestParam String category,
+            @RequestParam String brand) {
 
         List<Product> products = productService.getProductsByCategoryAndBrand(category, brand);
         List<ProductDto> convertedProducts = productService.getConvertedProducts(products);
@@ -125,7 +128,6 @@ public class ProductController {
         return ResponseEntity.ok(new ApiResponse("success", convertedProducts));
     }
 
-
     @GetMapping("/distinct/products")
     public ResponseEntity<ApiResponse> getDistinctProductsByName() {
         List<Product> products = productService.findDistinctProductByName();
@@ -134,16 +136,16 @@ public class ProductController {
     }
 
     // extra endpoints lol
-//    @GetMapping("/distinct/brands")
-//    public ResponseEntity<ApiResponse> getDistinctBrands() {
-//        List<String> brands = productService.getDistinctBrands();
-//        return ResponseEntity.ok(new ApiResponse("success", brands));
-//    }
-//
-//    @GetMapping("/distinct/by-id")
-//    public ResponseEntity<ApiResponse> getDistinctProductsById() {
-//        List<Product> products = productService.findDistinctProductById();
-//        List<ProductDto> productDtos = productService.getConvertedProducts(products);
-//        return ResponseEntity.ok(new ApiResponse("success", productDtos));
-//    }
+    @GetMapping("/distinct/brands")
+    public ResponseEntity<ApiResponse> getDistinctBrands() {
+        List<String> brands = productService.getDistinctBrands();
+        return ResponseEntity.ok(new ApiResponse("success", brands));
+    }
+
+    // @GetMapping("/distinct/by-id")
+    // public ResponseEntity<ApiResponse> getDistinctProductsById() {
+    // List<Product> products = productService.findDistinctProductById();
+    // List<ProductDto> productDtos = productService.getConvertedProducts(products);
+    // return ResponseEntity.ok(new ApiResponse("success", productDtos));
+    // }
 }

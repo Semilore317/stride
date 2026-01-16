@@ -9,15 +9,24 @@ import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByCategoryNameAndBrand(String category, String brand);
+
     List<Product> findByCategoryName(String category);
+
     List<Product> findByNameAndBrand(String brand, String name);
+
     List<Product> findByNameContainingIgnoreCase(String name);
 
-    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))") //removes the need to type the full name of the product
+    @Query("SELECT p FROM Product p WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :name, '%'))") // removes the need to
+                                                                                              // type the full name of
+                                                                                              // the product
     List<Product> findByName(String name);
+
     List<Product> findByBrand(String brand);
 
     boolean existsByNameAndBrand(String name, String brand);
 
     List<Product> findAllByCategoryId(Long categoryId);
+
+    @Query("SELECT DISTINCT p.brand FROM Product p WHERE p.brand IS NOT NULL")
+    List<String> findDistinctBrands();
 }
