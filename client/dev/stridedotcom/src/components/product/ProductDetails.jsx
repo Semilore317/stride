@@ -164,12 +164,20 @@ const ProductDetails = () => {
 
   return (
     <div className="p-8 min-h-screen bg-white text-black dark:bg-black dark:text-white transition-colors duration-300">
-      <Link
-        to="/products"
-        className="inline-block mb-6 bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
-      >
-        ← Back to Products
-      </Link>
+      <div className="flex items-center gap-4 mb-6">
+        <Link
+          to="/products"
+          className="inline-block bg-purple-600 hover:bg-purple-700 text-white py-2 px-4 rounded"
+        >
+          ← Back to Products
+        </Link>
+        <Link
+          to={`/edit-product/${product.id}`}
+          className="inline-block bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded"
+        >
+          Edit Product
+        </Link>
+      </div>
       <div className="flex flex-col md:flex-row gap-8 items-start justify-center mx-auto max-w-5xl w-full">
         <div
           className="flex-1 relative overflow-hidden h-[400px] rounded-lg max-w-[400px] cursor-pointer"

@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import Home from "@/components/home/Home.jsx";
 import Products from './components/product/Products';
 import AddProduct from './components/product/AddProduct';
+import EditProduct from './components/product/EditProduct';
 import ProductDetails from './components/product/ProductDetails';
 import Cart from './components/cart/Cart';
 import Order from './components/order/Order';
@@ -15,6 +16,7 @@ function App() {
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
         <Route path="/add-product" element={<AddProduct />} />
+        <Route path="/edit-product/:productId" element={<EditProduct />} />
         <Route path="/products" element={<Products />} />
         <Route path='/products/:name' element={<ProductDetails />} />
         <Route path='/products/category/:categoryId/products/' element={<Products />} />

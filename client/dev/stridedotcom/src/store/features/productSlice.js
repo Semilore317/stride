@@ -16,6 +16,20 @@ export const getAllProducts = createAsyncThunk(
   }
 );
 
+export const getProductById = createAsyncThunk(
+  "product/getProductById",
+  async (productId, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/products/product/${productId}/product`);
+      return response.data.data;
+    } catch (error) {
+      const message = error?.response?.data?.message || error.message;
+      toast.error(`Failed to fetch product: ${message}`);
+      return rejectWithValue(message);
+    }
+  }
+);
+
 export const getAllBrands = createAsyncThunk(
   "product/getAllBrands",
   async (_, { rejectWithValue }) => {
