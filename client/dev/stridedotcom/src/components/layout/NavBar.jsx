@@ -34,6 +34,7 @@ const NavBar = ({ isDark, toggleTheme }) => {
           {/* Desktop Nav */}
           <div className="hidden md:flex space-x-6 items-center">
             <NavLink to="/products">All Products</NavLink>
+            <NavLink to="/add-product">Add Product</NavLink>
             <NavLink to={`/cart/${userId}/my-cart`}> My Cart </NavLink>
             <NavLink to="/wishlist">My Wishlist</NavLink>
             <NavLink to={`/user/${userId}/orders`}>My Orders</NavLink>
@@ -78,6 +79,9 @@ const NavBar = ({ isDark, toggleTheme }) => {
                 <div className="flex flex-col gap-6 pt-6">
                   <NavLink to="/products" mobile onClick={handleLinkClick}>
                     All Products
+                  </NavLink>
+                  <NavLink to="/add-product" mobile onClick={handleLinkClick}>
+                    Add Product
                   </NavLink>
                   <NavLink
                     to={`/cart/${userId}/my-cart`}
