@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import static java.util.Optional.ofNullable;
 
 @Service
-@RequiredArgsConstructor //generates a constructor for only the final or @NonNull fields
+@RequiredArgsConstructor // generates a constructor for only the final or @NonNull fields
 public class ProductService implements iProductService {
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository;
@@ -51,24 +51,24 @@ public class ProductService implements iProductService {
     }
 
     private Product createProduct(AddProductRequest request, Category category) {
-//        if (productExists(request.getName(), request.getBrand())) {
-//
-//        }
+        // if (productExists(request.getName(), request.getBrand())) {
+        //
+        // }
         return new Product(
                 request.getName(),
                 request.getBrand(),
                 request.getPrice(),
                 request.getInventory(),
                 request.getDescription(),
-                category
-        );
+                category);
     }
-
 
     @Override
     public Product updateProduct(ProductUpdateRequest request, Long productId) {
-        return productRepository.findById(productId).map(existingProduct -> updateExistingProduct(existingProduct, request))
-                .map(productRepository::save) //lambda expression, equivalent to product -> productRepository.save(product).
+        return productRepository.findById(productId)
+                .map(existingProduct -> updateExistingProduct(existingProduct, request))
+                .map(productRepository::save) // lambda expression, equivalent to product ->
+                                              // productRepository.save(product).
                 .orElseThrow(() -> new EntityNotFoundException("Product with ID: " + productId + " not found"));
     }
 
@@ -147,11 +147,10 @@ public class ProductService implements iProductService {
         return productRepository.findAllByCategoryId(categoryId);
     }
 
-
     @Override
     public List<Product> getProductsByName(String name) {
-        //return productRepository.findByName(name);
-        //return productRepository.findByNameContainingIgnoreCase(name);
+        // return productRepository.findByName(name);
+        // return productRepository.findByNameContainingIgnoreCase(name);
 
         return Optional.ofNullable(productRepository.findByNameContainingIgnoreCase(name))
                 .orElseThrow(() -> new EntityNotFoundException("Product Not Found"));
@@ -176,14 +175,19 @@ public class ProductService implements iProductService {
     @Override
     public List<Product> getProductsByCategory(String category) {
         // testing...
-//        return Optional.ofNullable(productRepository.findByCategoryName(category))
-//                .orElse(new ArrayList<>());
+        // return Optional.ofNullable(productRepository.findByCategoryName(category))
+        // .orElse(new ArrayList<>());
         return productRepository.findByCategoryName(category);
     }
 
     @Override
     public List<Product> getProductsByBrand(String brand) {
         return productRepository.findByBrand(brand);
+    }
+
+    @Override
+    public List<String> getDistinctBrands() {
+        return productRepository.findDistinctBrands();
     }
 
     @Override
@@ -196,17 +200,16 @@ public class ProductService implements iProductService {
         return productRepository.findByNameAndBrand(brand, name);
     }
 
-    //custom method to convert a list of products to a product DTO
+    // custom method to convert a list of products to a product DTO
     @Override
     public List<ProductDto> getConvertedProducts(List<Product> products) {
-        return products.stream().
-                map(this::convertToDto).toList(); // uses the method below but to a list
+        return products.stream().map(this::convertToDto).toList(); // uses the method below but to a list
     }
 
     // custom method to convert product to a product DTO
     @Override // pulls the method to interface level
     public ProductDto convertToDto(Product product) {
-        //return modelMapper.map(product, ProductDto.class);
+        // return modelMapper.map(product, ProductDto.class);
         ProductDto productDto = modelMapper.map(product, ProductDto.class);
         // get the list of images and convert them to the imageDto
         List<Image> images = imageRepository.findByProductId(product.getId());
