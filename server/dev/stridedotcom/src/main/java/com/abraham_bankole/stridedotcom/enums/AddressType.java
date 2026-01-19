@@ -1,4 +1,4 @@
-package com.abraham_bankole.stridedotcom.model;
+package com.abraham_bankole.stridedotcom.enums;
 
 public enum AddressType {
     HOME,
