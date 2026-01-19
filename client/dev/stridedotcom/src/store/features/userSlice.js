@@ -7,9 +7,9 @@ export const getUserById = createAsyncThunk(
     async (userId) => {
         try{
             const response = await api.get(`/users/user/${userId}/user`);
-            console.log(response);
-            console.log(response.data);
-            console.log(response.data.data);
+            console.log("response", response);
+            console.log("response data",response.data);
+            console.log("response data data" , response.data.data);
             return response.data;
         }catch(error){
             throw error;
@@ -21,7 +21,7 @@ export const registerUser = createAsyncThunk(
     "users/registerUser",
     async (user) => {
         try{
-            const response = await api.post(`/users/addz`, user);
+            const response = await api.post("/users/add", user);
             console.log(response);
             console.log(response.data);
             console.log(response.data.data);
@@ -39,7 +39,7 @@ const initialState = {
 
 }
 
-const createUser = createSlice({
+const userSlice = createSlice({
     name: "user",
     initialState,
     // reducers: {
@@ -60,10 +60,6 @@ const createUser = createSlice({
         builder
             .addCase(getUserById.fulfilled, (state, action) => {
                 state.user = action.payload;
-                state.loading = false;
-            })
-            .addCase(getUserById.fulfilled, (state, action) => {
-                state.errorMessage = action.payload;
                 state.loading = false;
             })
             .addCase(registerUser.fulfilled, (state, action) => {
