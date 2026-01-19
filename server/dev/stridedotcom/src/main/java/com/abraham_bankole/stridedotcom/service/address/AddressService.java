@@ -1,9 +1,11 @@
 package com.abraham_bankole.stridedotcom.service.address;
 
+import com.abraham_bankole.stridedotcom.dtos.AddressDto;
 import com.abraham_bankole.stridedotcom.model.Address;
 import com.abraham_bankole.stridedotcom.repository.AddressRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,7 @@ import java.util.List;
 public class AddressService implements IAddressService {
 
     private final AddressRepository addressRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public List<Address> createAddress(List<Address> addressList) {
@@ -36,8 +39,7 @@ public class AddressService implements IAddressService {
                 addressRepository::delete,
                 () -> {
                     throw new EntityNotFoundException("Address Not Found");
-                }
-        );
+                });
     }
 
     @Override
@@ -50,7 +52,19 @@ public class AddressService implements IAddressService {
 
             return addressRepository.save(existingAddress);
         }).orElseThrow(
-                () -> new EntityNotFoundException("Address Not Found!")
-        );
+                () -> new EntityNotFoundException("Address Not Found!"));
+    }
+
+    // TODO: Replace with MapStruct mappers project-wide
+    @Override
+    public AddressDto convertToDto(Address address) {
+        return modelMapper.map(address, AddressDto.class);
+    }
+
+    @Override
+    public List<AddressDto> convertToDto(List<Address> addressList) {
+        return addressList.stream()
+                .map(this::convertToDto)
+                .toList();
     }
 }
