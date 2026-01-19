@@ -4,6 +4,7 @@ import com.abraham_bankole.stridedotcom.dtos.OrderDto;
 import com.abraham_bankole.stridedotcom.dtos.OrderItemDto;
 import com.abraham_bankole.stridedotcom.dtos.UserDto;
 import com.abraham_bankole.stridedotcom.model.User;
+import com.abraham_bankole.stridedotcom.repository.AddressRepository;
 import com.abraham_bankole.stridedotcom.repository.CartRepository;
 import com.abraham_bankole.stridedotcom.repository.OrderRepository;
 import com.abraham_bankole.stridedotcom.repository.UserRepository;
@@ -27,6 +28,7 @@ public class UserService implements iUserService {
     private final UserRepository userRepository;
     private final CartRepository cartRepository;
     private final OrderRepository orderRepository;
+    private final AddressRepository addressRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -40,7 +42,20 @@ public class UserService implements iUserService {
                     user.setLastName(request.getLastName());
                     user.setEmail(request.getEmail());
                     user.setPassword(passwordEncoder.encode(request.getPassword()));
-                    return userRepository.save(user);
+
+                    User savedUser = userRepository.save(user);
+
+
+                    Optional.ofNullable(request.getAddressList()).ifPresent(addressList -> {
+                        addressList.forEach(
+                                address -> {
+                                    address.setUser(savedUser);
+                                    addressRepository.save(address);
+                                }
+                        );
+                    });
+                    return savedUser;
+                    //return userRepository.save(user);
                 }).orElseThrow(() -> new EntityExistsException("Oops! " + request.getEmail() + " already exists!"));
     }
 
