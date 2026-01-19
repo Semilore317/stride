@@ -6,6 +6,8 @@ import paginationReducer from "./features/paginationSlice.js"
 import cartReducer from "./features/cartSlice.js"
 import { orderReducer } from "./features/orderSlice.js";
 import wishlistReducer from "./features/wishlistSlice.js";
+import userReducer from "./features/userSlice.js"
+
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +17,7 @@ export const store = configureStore({
     pagination: paginationReducer,
     cart: cartReducer,
     order: orderReducer,
-    wishlist: wishlistReducer
+    wishlist: wishlistReducer,
+    user: userReducer
   },
 });
