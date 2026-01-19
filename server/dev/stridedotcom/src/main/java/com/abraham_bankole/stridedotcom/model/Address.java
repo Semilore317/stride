@@ -1,5 +1,6 @@
 package com.abraham_bankole.stridedotcom.model;
 
+import com.abraham_bankole.stridedotcom.enums.AddressType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
