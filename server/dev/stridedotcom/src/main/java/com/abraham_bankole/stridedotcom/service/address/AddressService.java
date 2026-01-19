@@ -35,7 +35,7 @@ public class AddressService implements IAddressService {
         addressRepository.findById(addressId).ifPresentOrElse(
                 addressRepository::delete,
                 () -> {
-                    throw new EntityNotFoundException("Address Not Found")
+                    throw new EntityNotFoundException("Address Not Found");
                 }
         );
     }
