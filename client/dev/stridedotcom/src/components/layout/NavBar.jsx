@@ -40,6 +40,7 @@ const NavBar = ({ isDark, toggleTheme }) => {
             <NavLink to={`/user/${userId}/orders`}>My Orders</NavLink>
             <NavLink to="/about">About</NavLink>
             <NavLink to="/more">My Account</NavLink>
+            <NavLink to="/register"> Register </NavLink>
 
             {/* Theme Toggle */}
             <button
