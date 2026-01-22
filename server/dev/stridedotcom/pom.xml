@@ -148,6 +148,31 @@
 				</configuration>
 			</plugin>
 
+            <plugin>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok-maven-plugin</artifactId>
+                <version>1.18.20.0</version> <configuration>
+                <sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
+                <outputDirectory>${project.build.directory}/delombok</outputDirectory>
+                <addOutputDirectory>false</addOutputDirectory>
+            </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.projectlombok</groupId>
+                        <artifactId>lombok</artifactId>
+                        <version>1.18.36</version>
+                    </dependency>
+                </dependencies>
+                <executions>
+                    <execution>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>delombok</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
 			<!-- Spring Boot plugin (optional but recommended for packaging) -->
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
