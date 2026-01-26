@@ -90,7 +90,7 @@ public class ShopConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(API+"/auth/**", API+"/products/**").permitAll()  // NEW: Allow public access to auth & products
                         //.requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated() // Temporarily disable security for dev
-                        .anyRequest().permitAll());
+                        .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
         // tell Spring to use my filter before its own

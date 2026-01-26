@@ -43,7 +43,7 @@ public class CookieUtils {
         if (cookies != null) {
             for (Cookie cookie : cookies) {
                 System.out.println("Names of the cookie found: " + cookie.getName());
-                if ("refreshToken".equals(cookie.getName())) {
+                if ("refresh_token".equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
