@@ -14,7 +14,7 @@ public class CookieUtils {
     private boolean useSecureCookie;
 
     public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken, long maxAge) {
-        if (response == null){
+        if (response == null) {
             throw new IllegalArgumentException("HttpServletResponse cannot be null");
         }
         Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
@@ -22,8 +22,10 @@ public class CookieUtils {
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge((int) (maxAge / 1000));
         refreshTokenCookie.setSecure(useSecureCookie);
-        String sameSite = useSecureCookie ? "None" : "Lax"; // Lax allows for clicking links and GET requests, but nothing else, Strict blocks everything, None allows everything
-        //makes sense to set Secure attribute if sameSite is None
+        String sameSite = useSecureCookie ? "None" : "Lax"; // Lax allows for clicking links and GET requests, but
+                                                            // nothing else, Strict blocks everything, None allows
+                                                            // everything
+        // makes sense to set Secure attribute if sameSite is None
         setResponseHeader(response, refreshTokenCookie, sameSite);
     }
 
@@ -50,7 +52,6 @@ public class CookieUtils {
         }
         return null;
     }
-
 
     /* TESTING */
     public void logCookies(HttpServletRequest request) {

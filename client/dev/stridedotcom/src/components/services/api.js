@@ -26,7 +26,12 @@ api.interceptors.response.use(
         const originalRequest = error.config;
 
         // If we get a 401 and haven't already retried
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // Don't retry for auth endpoints (login returns 401 for bad credentials, refresh-token failure shouldn't trigger another refresh)
+        if (
+            error.response?.status === 401 &&
+            !originalRequest._retry &&
+            !originalRequest.url?.includes("/auth/")
+        ) {
             originalRequest._retry = true;
 
             try {
@@ -41,9 +46,11 @@ api.interceptors.response.use(
                 originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                 return api(originalRequest);
             } catch (refreshError) {
-                // Refresh failed, clear token and redirect to login
+                // Refresh failed, clear token and redirect to login (but only if not already there)
                 localStorage.removeItem("accessToken");
-                window.location.href = "/login";
+                if (window.location.pathname !== "/login") {
+                    window.location.href = "/login";
+                }
                 return Promise.reject(refreshError);
             }
         }
