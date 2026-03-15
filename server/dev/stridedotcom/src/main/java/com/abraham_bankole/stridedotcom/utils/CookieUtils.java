@@ -3,63 +3,52 @@ package com.abraham_bankole.stridedotcom.utils;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-
 @Component
 public class CookieUtils {
-    @Value("${app.useSecureCookie}")
+
+    private static final Logger log = LoggerFactory.getLogger(CookieUtils.class);
+    private static final String REFRESH_TOKEN_COOKIE = "refresh_token";
+
+    @Value("${app.useSecureCookie:false}")
     private boolean useSecureCookie;
 
     public void addRefreshTokenCookie(HttpServletResponse response, String refreshToken, long maxAge) {
-        if (response == null){
+        if (response == null) {
             throw new IllegalArgumentException("HttpServletResponse cannot be null");
         }
-        Cookie refreshTokenCookie = new Cookie("refresh_token", refreshToken);
+        Cookie refreshTokenCookie = new Cookie(REFRESH_TOKEN_COOKIE, refreshToken);
         refreshTokenCookie.setHttpOnly(true);
         refreshTokenCookie.setPath("/");
         refreshTokenCookie.setMaxAge((int) (maxAge / 1000));
         refreshTokenCookie.setSecure(useSecureCookie);
-        String sameSite = useSecureCookie ? "None" : "Lax"; // Lax allows for clicking links and GET requests, but nothing else, Strict blocks everything, None allows everything
-        //makes sense to set Secure attribute if sameSite is None
+        String sameSite = useSecureCookie ? "None" : "Lax";
         setResponseHeader(response, refreshTokenCookie, sameSite);
     }
 
     private void setResponseHeader(HttpServletResponse response, Cookie refreshTokenCookie, String sameSite) {
-        StringBuilder cookieHeader = new StringBuilder();
-        cookieHeader.append(refreshTokenCookie.getName()).append("=")
-                .append(refreshTokenCookie.getValue())
-                .append("; HttpOnly; Path=").append(refreshTokenCookie.getPath())
-                .append("; Max-Age=").append(refreshTokenCookie.getMaxAge())
-                .append(useSecureCookie ? "; Secure" : "")
-                .append("; SameSite=").append(sameSite);
-        response.setHeader("Set-Cookie", cookieHeader.toString());
+        String cookieHeader = refreshTokenCookie.getName() + "=" + refreshTokenCookie.getValue()
+                + "; HttpOnly; Path=" + refreshTokenCookie.getPath()
+                + "; Max-Age=" + refreshTokenCookie.getMaxAge()
+                + (useSecureCookie ? "; Secure" : "")
+                + "; SameSite=" + sameSite;
+        response.setHeader("Set-Cookie", cookieHeader);
     }
 
     public String getRefreshTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                System.out.println("Names of the cookie found: " + cookie.getName());
-                if ("refreshToken".equals(cookie.getName())) {
+                if (REFRESH_TOKEN_COOKIE.equals(cookie.getName())) {
                     return cookie.getValue();
                 }
             }
         }
+        log.debug("No {} cookie found in request.", REFRESH_TOKEN_COOKIE);
         return null;
-    }
-
-
-    /* TESTING */
-    public void logCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        System.out.println("Cookies: " + (cookies != null ? Arrays.toString(cookies) : "null"));
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                System.out.println("Cookie name: " + cookie.getName() + ", value: " + cookie.getValue());
-            }
-        }
     }
 }
