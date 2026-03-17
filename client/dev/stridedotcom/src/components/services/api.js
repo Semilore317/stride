@@ -1,13 +1,19 @@
 import axios from "axios"
 
 export const api = axios.create({
-    baseURL: "http://localhost:9090/api/v1",
+    baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:9090/api/v1",
     withCredentials: true,  // for authenticated requests (cookies for refresh token)
 })
 
-// Request interceptor to add JWT token to Authorization header
+// Request interceptor to add JWT token and fix leading slashes
 api.interceptors.request.use(
     (config) => {
+        // Fix: If URL starts with /, Axios treats it as root of domain and ignores baseURL's path.
+        // We strip it here so it appends to the baseURL (e.g. /api/v1).
+        if (config.url && config.url.startsWith("/")) {
+            config.url = config.url.substring(1);
+        }
+
         const token = localStorage.getItem("accessToken");
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;

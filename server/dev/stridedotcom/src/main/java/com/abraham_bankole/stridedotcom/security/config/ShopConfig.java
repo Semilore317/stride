@@ -33,8 +33,8 @@ public class ShopConfig {
     private final ShopUserDetailsService shopUserDetailsService;
     private final JwtEntryPoint authEntryPoint;
 
-    @Value("${api.prefix}")
-    private String API;
+    @Value("${cors.allowed-origins:http://localhost:5173,http://localhost:5174}")
+    private List<String> allowedOrigins;
 
     @Bean
     public ModelMapper modelMapper() {
@@ -68,14 +68,7 @@ public class ShopConfig {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOriginPatterns(Arrays.asList("http://localhost:5173", "http://localhost:5174")); // Your
-                                                                                                                 // Vite
-                                                                                                                 // frontend
-                                                                                                                 // (use
-                                                                                                                 // patterns
-                                                                                                                 // for
-                                                                                                                 // dev
-                                                                                                                 // flexibility)
+        configuration.setAllowedOrigins(allowedOrigins); 
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*")); // Allow all headers (e.g., Authorization for JWT)
         configuration.setAllowCredentials(true); // Enable for JWT cookies if needed
@@ -88,25 +81,12 @@ public class ShopConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        List<String> SECURED_URLS = List.of(API + "/carts/**", API + "/cartItems/**", API + "/orders/**");
-
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // NEW: Integrate CORS (uses the bean
-                                                                                   // above)
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // NEW: Integrate CORS
                 .exceptionHandling(exception -> exception.authenticationEntryPoint(authEntryPoint))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(API + "/auth/**", API + "/products/**", API + "/users/add").permitAll() // Allow
-                                                                                                                 // public
-                                                                                                                 // access
-                                                                                                                 // to
-                                                                                                                 // auth,
-                                                                                                                 // products,
-                                                                                                                 // and
-                                                                                                                 // user
-                                                                                                                 // registration
-                        // .requestMatchers(SECURED_URLS.toArray(String[]::new)).authenticated() //
-                        // Temporarily disable security for dev
+                        .requestMatchers(API + "/auth/**", API + "/products/**", API + "/users/add").permitAll() 
                         .anyRequest().authenticated());
 
         http.authenticationProvider(authenticationProvider());
@@ -114,4 +94,4 @@ public class ShopConfig {
         http.addFilterBefore(authTokenFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-}
+}
